@@ -391,76 +391,20 @@ function calculateInstallment() {
 
   // حساب الفائدة الشهرية
   const monthlyInterestRate = interestRate / 100 / 12;
-
-  // المرحلة الأولى
-  const firstPhaseDuration = maxCommitmentMonths;
-  const firstPhaseInterest = unitAmount * monthlyInterestRate; // الفائدة الشهرية
-  const firstPhaseInstallment = firstPhaseInterest + totalCommitments; // القسط الشهري للمرحلة الأولى
+  const firstPhaseInterest = unitAmount * monthlyInterestRate; // الفائدة الشهرية للمرحلة الأولى
 
   // التحقق من تجاوز 65% من الراتب
-  if (firstPhaseInstallment > salary * 0.65) {
-    const requiredDownPayment = (firstPhaseInstallment - salary * 0.65) * firstPhaseDuration;
-    openResultModal({
-      firstPhaseInstallment: 0,
-      firstPhaseDuration: 0,
-      secondPhaseInstallment: 0,
-      secondPhaseDuration: 0,
-      unitAmount: unitAmount,
-      discount: discount,
-      totalInterest: 0,
-      totalUnitWithInterest: 0,
-      message: `لا يمكن تمويل الوحدة بسبب الالتزامات الحالية. الدفعة الأولية المطلوبة: ${requiredDownPayment.toFixed(2)} ريال.`
-    });
-    return;
-  }
+  const maxDeduction = salary * 0.65;
+  let firstPhaseInstallment = firstPhaseInterest + totalCommitments;
 
-  const firstPhaseTotalPaid = firstPhaseInstallment * firstPhaseDuration;
+  let requiredDownPayment = 0; // الدفعة المقدمة
 
-  // المرحلة الثانية
-  const remainingLoan = unitAmount - firstPhaseTotalPaid;
-  const remainingDuration = durationMonths - firstPhaseDuration;
+  if (firstPhaseInstallment > maxDeduction) {
+    // إذا تجاوز القسط المسموح به، نحسب الدفعة المقدمة
+    const excessAmount = firstPhaseInstallment - maxDeduction;
+    requiredDownPayment = excessAmount * maxCommitmentMonths;
+    unitAmount -= requiredDownPayment; 
 
-  // التحقق من أن المرحلة الثانية ممكنة
-  const numerator = remainingLoan * monthlyInterestRate;
-  const denominator = 1 - Math.pow(1 + monthlyInterestRate, -remainingDuration);
-  const secondPhaseInstallment = numerator / denominator;
-
-  if (secondPhaseInstallment > salary * 0.65) {
-    const requiredDownPayment = (secondPhaseInstallment - salary * 0.65) * remainingDuration;
-    openResultModal({
-      firstPhaseInstallment: firstPhaseInstallment,
-      firstPhaseDuration: firstPhaseDuration,
-      secondPhaseInstallment: 0,
-      secondPhaseDuration: 0,
-      unitAmount: unitAmount,
-      discount: discount,
-      totalInterest: 0,
-      totalUnitWithInterest: 0,
-      message: `لا يمكن تمويل الوحدة بسبب المرحلة الثانية. الدفعة الأولية المطلوبة: ${requiredDownPayment.toFixed(2)} ريال.`
-    });
-    return;
-  }
-
-  const secondPhaseTotalPaid = secondPhaseInstallment * remainingDuration;
-
-  // إجمالي الفوائد
-  const totalPaid = firstPhaseTotalPaid + secondPhaseTotalPaid;
-  const totalInterest = totalPaid - unitAmount;
-  const totalUnitWithInterest = unitAmount + totalInterest;
-
-  // عرض النتيجة
-  openResultModal({
-    firstPhaseInstallment: firstPhaseInstallment,
-    firstPhaseDuration: firstPhaseDuration,
-    secondPhaseInstallment: secondPhaseInstallment,
-    secondPhaseDuration: remainingDuration,
-    unitAmount: unitAmount,
-    discount: discount,
-    totalInterest: totalInterest,
-    totalUnitWithInterest: totalUnitWithInterest,
-    message: "التمويل ممكن بناءً على المعلومات المدخلة."
-  });
-}
 
 
 
