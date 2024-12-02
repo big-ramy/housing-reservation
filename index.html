@@ -389,22 +389,53 @@ function calculateInstallment() {
   const maxCommitmentMonths = Math.max(...commitments.map(c => c.months));
   const totalCommitments = commitments.reduce((sum, c) => sum + c.amount, 0);
 
-  // حساب الفائدة الشهرية
-  const monthlyInterestRate = interestRate / 100 / 12;
-  const firstPhaseInterest = unitAmount * monthlyInterestRate; // الفائدة الشهرية للمرحلة الأولى
+  // حساب الفائدة السنوية
+  const annualInterest = unitAmount * (interestRate / 100);
 
-  // التحقق من تجاوز 65% من الراتب
-  const maxDeduction = salary * 0.65;
-  let firstPhaseInstallment = firstPhaseInterest + totalCommitments;
+  // حساب الفائدة الإجمالية
+  const totalInterest = annualInterest * (durationMonths / 12);
+
+  // حساب الفائدة الشهرية
+  const monthlyInterest = totalInterest / durationMonths;
+
+  // المرحلة الأولى
+  const firstPhaseDuration = maxCommitmentMonths;
+  const firstPhaseInstallment = totalCommitments + monthlyInterest; // القسط الشهري للمرحلة الأولى
 
   let requiredDownPayment = 0; // الدفعة المقدمة
 
-  if (firstPhaseInstallment > maxDeduction) {
+  if (firstPhaseInstallment > salary * 0.65) {
     // إذا تجاوز القسط المسموح به، نحسب الدفعة المقدمة
-    const excessAmount = firstPhaseInstallment - maxDeduction;
+    const excessAmount = firstPhaseInstallment - salary * 0.65;
     requiredDownPayment = excessAmount * maxCommitmentMonths;
-    unitAmount -= requiredDownPayment; 
+    unitAmount -= requiredDownPayment; // تقليل مبلغ الوحدة بمقدار الدفعة المقدمة
+  }
 
+  const firstPhaseTotalPaid = firstPhaseInstallment * firstPhaseDuration;
+
+  // المرحلة الثانية
+  const remainingDuration = durationMonths - maxCommitmentMonths;
+  const remainingLoan = unitAmount - firstPhaseTotalPaid;
+  const secondPhaseInstallment = (remainingLoan + totalInterest) / remainingDuration;
+
+  // إجمالي مبلغ الوحدة بعد الفوائد
+  const totalUnitWithInterest = unitAmount + totalInterest;
+
+  // عرض النتيجة
+  openResultModal({
+    firstPhaseInstallment: firstPhaseInstallment,
+    firstPhaseDuration: firstPhaseDuration,
+    secondPhaseInstallment: secondPhaseInstallment,
+    secondPhaseDuration: remainingDuration,
+    unitAmount: unitAmount,
+    discount: discount,
+    totalInterest: totalInterest,
+    totalUnitWithInterest: totalUnitWithInterest,
+    message: requiredDownPayment > 0
+      ? `تم احتساب دفعة مقدمة بقيمة ${requiredDownPayment.toFixed(2)} ريال لتغطية الالتزامات.`
+      : "التمويل ممكن بناءً على المعلومات المدخلة."
+  });
+}
 
 
 
