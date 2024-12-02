@@ -364,10 +364,6 @@ function openResultModal(message) {
 
 
   // دالة إغلاق نافذة النتيجة
-  function closeResultModal() {
-    document.getElementById("result-modal").style.display = "none";
-  }
-
 function calculateInstallment() {
   const salary = parseFloat(document.getElementById("salary").value) || 0;
   let unitAmount = parseFloat(document.getElementById("loanAmount").value) || 0;
@@ -398,24 +394,25 @@ function calculateInstallment() {
   // حساب الفائدة الشهرية
   const monthlyInterest = totalInterest / durationMonths;
 
-  // المرحلة الأولى
+  // المرحلة الأولى (قسط + الالتزامات الحالية)
   const firstPhaseDuration = maxCommitmentMonths;
   const firstPhaseInstallment = totalCommitments + monthlyInterest; // القسط الشهري للمرحلة الأولى
+  const commitmentPercentage = ((firstPhaseInstallment / salary) * 100).toFixed(2); // نسبة الالتزامات مع القسط
 
-  let requiredDownPayment = 0; // الدفعة المقدمة
+  let requiredDownPayment = 0; // الدفعة المقدمة إذا لزم الأمر
+  let financingMessage = "";
 
-  if (firstPhaseInstallment > salary * 0.65) {
-    // إذا تجاوز القسط المسموح به، نحسب الدفعة المقدمة
-    const excessAmount = firstPhaseInstallment - salary * 0.65;
-    requiredDownPayment = excessAmount * maxCommitmentMonths;
-    unitAmount -= requiredDownPayment; // تقليل مبلغ الوحدة بمقدار الدفعة المقدمة
+  if (commitmentPercentage > 65) {
+    // إذا تجاوزت نسبة الالتزامات 65%، نحسب الدفعة اللازمة
+    requiredDownPayment = (firstPhaseInstallment - salary * 0.65) * firstPhaseDuration;
+    financingMessage = `لا يمكنك الحصول على التمويل إلا بتوفير دفعة قدرها ${requiredDownPayment.toFixed(2)} ريال.`;
+  } else {
+    financingMessage = "بإمكانك الحصول على التمويل بناءً على المعلومات المدخلة.";
   }
-
-  const firstPhaseTotalPaid = firstPhaseInstallment * firstPhaseDuration;
 
   // المرحلة الثانية
   const remainingDuration = durationMonths - maxCommitmentMonths;
-  const remainingLoan = unitAmount - firstPhaseTotalPaid;
+  const remainingLoan = unitAmount; // لم يتم خصم الدفعة
   const secondPhaseInstallment = (remainingLoan + totalInterest) / remainingDuration;
 
   // إجمالي مبلغ الوحدة بعد الفوائد
@@ -425,15 +422,14 @@ function calculateInstallment() {
   openResultModal({
     firstPhaseInstallment: firstPhaseInstallment,
     firstPhaseDuration: firstPhaseDuration,
+    commitmentPercentage: commitmentPercentage,
     secondPhaseInstallment: secondPhaseInstallment,
     secondPhaseDuration: remainingDuration,
     unitAmount: unitAmount,
     discount: discount,
     totalInterest: totalInterest,
     totalUnitWithInterest: totalUnitWithInterest,
-    message: requiredDownPayment > 0
-      ? `تم احتساب دفعة مقدمة بقيمة ${requiredDownPayment.toFixed(2)} ريال لتغطية الالتزامات.`
-      : "التمويل ممكن بناءً على المعلومات المدخلة."
+    message: financingMessage
   });
 }
 
