@@ -220,6 +220,33 @@
     .installment-btn:hover {
       background-color: #0056b3;
     }
+
+    .video-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.video-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.video-btn:hover {
+  background-color: #0056b3;
+}
+
+.modal video {
+  max-width: 100%;
+  height: auto;
+}
+
   </style>
 </head>
 <body>
@@ -243,6 +270,24 @@
     <img src="https://ruh-s3.bluvalt.com/api-nhc.sa/s3fs-public/2023-07/%D8%AF%D8%B1%D8%A9%20%D8%A7%D9%84%D9%85%D8%AF%D9%8A%D9%86%D8%A9%201%2001.jpg" alt="نموذج العمارة 2">
     <img src="https://jed-s3.bluvalt.com/sakani-prod-media-assets/uploads/published_medium/file/61ed161b593f7b5bda72d79c/high_DM-Render__7_.jpg" alt="نموذج العمارة 3">
   </div>
+<!-- أزرار الفيديو -->
+<div class="video-buttons">
+  <button class="video-btn" onclick="openVideoModal('video1.mp4')">فيديو 1</button>
+  <button class="video-btn" onclick="openVideoModal('video2.mp4')">فيديو 2</button>
+  <button class="video-btn" onclick="openVideoModal('video3.mp4')">فيديو 3</button>
+  <button class="video-btn" onclick="openVideoModal('video4.mp4')">فيديو 4</button>
+</div>
+
+<!-- نافذة عرض الفيديو -->
+<div id="video-modal" class="modal">
+  <div class="modal-content">
+    <button class="modal-close-btn" onclick="closeVideoModal()">×</button>
+    <video id="video-player" controls style="width: 100%; height: auto;">
+      <source id="video-source" src="" type="video/mp4">
+      متصفحك لا يدعم تشغيل الفيديو.
+    </video>
+  </div>
+</div>
 
    <!-- زر حساب القسط -->
    <button class="installment-btn" onclick="openInstallmentModal()">حساب القسط الشهري</button>
@@ -320,6 +365,33 @@
   </div>
 
   <script>
+// دالة فتح نافذة الفيديو
+function openVideoModal(videoFileName) {
+  const videoPlayer = document.getElementById("video-player");
+  const videoSource = document.getElementById("video-source");
+
+  // تحديث مصدر الفيديو
+  videoSource.src = videoFileName;
+
+  // إعادة تحميل الفيديو
+  videoPlayer.load();
+
+  // إظهار النافذة المنبثقة
+  document.getElementById("video-modal").style.display = "flex";
+}
+
+// دالة إغلاق نافذة الفيديو
+function closeVideoModal() {
+  const videoPlayer = document.getElementById("video-player");
+
+  // إيقاف الفيديو عند إغلاق النافذة
+  videoPlayer.pause();
+
+  // إخفاء النافذة المنبثقة
+  document.getElementById("video-modal").style.display = "none";
+}
+
+    
  // دالة فتح نافذة الحساب
  function openInstallmentModal() {
     document.getElementById("installment-modal").style.display = "flex";
