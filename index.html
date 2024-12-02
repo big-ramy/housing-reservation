@@ -191,35 +191,6 @@
     .result-modal .result-content button:hover {
       background-color: #218838;
     }
-
-
-    .models {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin: 20px auto;
-    }
-
-    .models img {
-      width: 200px;
-      height: auto;
-      border-radius: 5px;
-      box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
-    }
-    .installment-btn {
-      margin: 20px auto;
-      padding: 10px 20px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      cursor: pointer;
-      border-radius: 4px;
-      transition: background-color 0.3s ease;
-    }
-
-    .installment-btn:hover {
-      background-color: #0056b3;
-    }
   </style>
 </head>
 <body>
@@ -229,12 +200,9 @@
     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQiNel1DsK7PJmkRJp6xLUH8WAbZ6d0L1PVnw&s" alt="لوجو المشروع">
   </header>
 
-  
-
   <!-- رسالة معلومات -->
-  <div class="info"  style="width:100%">
-    <strong>عزيزي المستفيد:</strong> حجز الوحدة لا يعني أنه حجز نهائي. يتوجب عليك دفع رسوم قدرها <strong>805 ريال</strong>
-    على حسابك في تطبيق سكني بعد استلام رسالة الحجز.
+  <div class="info">
+    <strong>عزيزي المستفيد:</strong> حجز الوحدة لا يعني أنه حجز نهائي. يتوجب عليك دفع رسوم قدرها <strong>805 ريال</strong> على حسابك في تطبيق سكني بعد استلام رسالة الحجز.
   </div>
 
   <!-- صور نماذج العمائر -->
@@ -244,13 +212,12 @@
     <img src="https://jed-s3.bluvalt.com/sakani-prod-media-assets/uploads/published_medium/file/61ed161b593f7b5bda72d79c/high_DM-Render__7_.jpg" alt="نموذج العمارة 3">
   </div>
 
-   <!-- زر حساب القسط -->
-   <button class="installment-btn" onclick="openInstallmentModal()">حساب القسط الشهري</button>
+  <!-- زر حساب القسط -->
+  <button class="installment-btn" onclick="openInstallmentModal()">حساب القسط الشهري</button>
 
-   <!-- نافذة حساب القسط -->
-   <div id="installment-modal" class="modal">
+  <!-- نافذة حساب القسط -->
+  <div id="installment-modal" class="modal">
     <div class="modal-content">
-      <button class="modal-close-btn" onclick="closeInstallmentModal()">×</button>
       <h2>حساب القسط الشهري</h2>
       <form id="installment-form">
         <input id="salary" type="number" placeholder="الراتب الشهري">
@@ -265,12 +232,12 @@
         <input id="commitmentMonths3" type="number" placeholder="مدة التزام 3 (بالأشهر)">
         <input id="commitment4" type="number" placeholder="التزام 4">
         <input id="commitmentMonths4" type="number" placeholder="مدة التزام 4 (بالأشهر)">
-        
         <button type="button" onclick="calculateInstallment()">حساب القسط</button>
       </form>
+      <button onclick="closeInstallmentModal()">إغلاق</button>
     </div>
   </div>
-  
+
   <!-- نافذة النتيجة -->
   <div id="result-modal" class="result-modal">
     <div class="result-content">
@@ -279,18 +246,9 @@
       <button onclick="closeResultModal()">إغلاق</button>
     </div>
   </div>
-  
 
-   <div id="result-modal" class="result-modal">
-    <div class="result-content">
-      <h3>نتيجة الحساب</h3>
-      <p id="result-message">...</p>
-      <button onclick="closeResultModal()">إغلاق</button>
-    </div>
-  </div>
-
-   <h1>الوحدات السكنية المتاحة</h1>
   <!-- جدول الوحدات -->
+  <h1>الوحدات السكنية المتاحة</h1>
   <table id="units-table">
     <thead>
       <tr>
@@ -319,51 +277,48 @@
     </div>
   </div>
 
+  <footer>
+    © 2024 - نظام حجز الوحدات السكنية
+  </footer>
+
+  <!-- جافا سكربت -->
   <script>
- // دالة فتح نافذة الحساب
- function openInstallmentModal() {
-    document.getElementById("installment-modal").style.display = "flex";
-  }
+function openInstallmentModal() {
+  document.getElementById("installment-modal").style.display = "flex";
+}
 
-  // دالة إغلاق نافذة الحساب
-  function closeInstallmentModal() {
-    document.getElementById("installment-modal").style.display = "none";
-  }
+function closeInstallmentModal() {
+  document.getElementById("installment-modal").style.display = "none";
+}
 
-  // دالة فتح نافذة النتيجة
-// دالة عرض النتيجة المنسقة
 function openResultModal(message) {
   const modal = document.getElementById("result-modal");
   const resultMessage = document.getElementById("result-message");
 
-  // إضافة تنسيق HTML للرسالة
   resultMessage.innerHTML = `
     <div style="text-align: right; font-size: 16px; line-height: 1.8;">
       <strong style="font-size: 18px; color: #333;">النتائج:</strong><br>
-      <hr style="margin: 10px 0;">
-      <strong>القسط في المرحلة الأولى:</strong> <span style="color: #007bff;">${message.firstPhaseInstallment.toFixed(2)} ريال</span><br>
-      <strong>مدة المرحلة الأولى:</strong> <span style="color: #007bff;">${message.firstPhaseDuration} شهر</span><br>
-      <hr style="margin: 10px 0;">
-      <strong>القسط في المرحلة الثانية:</strong> <span style="color: #28a745;">${message.secondPhaseInstallment.toFixed(2)} ريال</span><br>
-      <strong>مدة المرحلة الثانية:</strong> <span style="color: #28a745;">${message.secondPhaseDuration} شهر</span><br>
-      <hr style="margin: 10px 0;">
-      <strong>مبلغ الوحدة بعد الخصم:</strong> <span style="color: #ffc107;">${message.unitAmount.toFixed(2)} ريال</span><br>
-      <strong>تم خصم:</strong> <span style="color: #dc3545;">${message.discount} ريال</span><br>
-      <hr style="margin: 10px 0;">
-      <strong>إجمالي الفوائد:</strong> <span style="color: #17a2b8;">${message.totalInterest.toFixed(2)} ريال</span><br>
-      <strong>إجمالي مبلغ الوحدة بعد إضافة الفوائد:</strong> <span style="color: #6c757d;">${message.totalUnitWithInterest.toFixed(2)} ريال</span><br>
-      <hr style="margin: 10px 0;">
-      <strong style="color: #28a745;">التمويل ممكن بناءً على المعلومات المدخلة.</strong>
+      <hr>
+      <strong>القسط + الالتزامات الحالية:</strong> <span style="color: #007bff;">${message.firstPhaseInstallment.toFixed(2)} ريال</span><br>
+      <strong>مدة المرحلة الأولى:</strong> ${message.firstPhaseDuration} شهر<br>
+      <strong>نسبة الالتزامات إلى الراتب:</strong> <span style="color: #dc3545;">${message.commitmentPercentage}%</span><br>
+      <strong>القسط في المرحلة الثانية:</strong> ${message.secondPhaseInstallment.toFixed(2)} ريال<br>
+      <strong>مدة المرحلة الثانية:</strong> ${message.secondPhaseDuration} شهر<br>
+      <strong>مبلغ الوحدة بعد الخصم:</strong> ${message.unitAmount.toFixed(2)} ريال<br>
+      <strong>تم خصم:</strong> ${message.discount} ريال<br>
+      <strong>إجمالي الفوائد:</strong> ${message.totalInterest.toFixed(2)} ريال<br>
+      <strong>إجمالي مبلغ الوحدة بعد إضافة الفوائد:</strong> ${message.totalUnitWithInterest.toFixed(2)} ريال<br>
+      ${message.financingMessage}
     </div>
   `;
 
   modal.style.display = "flex";
 }
 
+function closeResultModal() {
+  document.getElementById("result-modal").style.display = "none";
+}
 
-
-
-  // دالة إغلاق نافذة النتيجة
 function calculateInstallment() {
   const salary = parseFloat(document.getElementById("salary").value) || 0;
   let unitAmount = parseFloat(document.getElementById("loanAmount").value) || 0;
@@ -374,7 +329,7 @@ function calculateInstallment() {
     { amount: parseFloat(document.getElementById("commitment1").value) || 0, months: parseInt(document.getElementById("commitmentMonths1").value) || 0 },
     { amount: parseFloat(document.getElementById("commitment2").value) || 0, months: parseInt(document.getElementById("commitmentMonths2").value) || 0 },
     { amount: parseFloat(document.getElementById("commitment3").value) || 0, months: parseInt(document.getElementById("commitmentMonths3").value) || 0 },
-    { amount: parseFloat(document.getElementById("commitment4").value) || 0, months: parseInt(document.getElementById("commitmentMonths4").value) || 0 },
+    { amount: parseFloat(document.getElementById("commitment4").value) || 0, months: parseInt(document.get.commitmentMonths4").value) || 0 },
   ];
 
   // تطبيق الخصم بناءً على الراتب
@@ -394,7 +349,7 @@ function calculateInstallment() {
   // حساب الفائدة الشهرية
   const monthlyInterest = totalInterest / durationMonths;
 
-  // المرحلة الأولى (قسط + الالتزامات الحالية)
+  // المرحلة الأولى: (القسط + الالتزامات الحالية)
   const firstPhaseDuration = maxCommitmentMonths;
   const firstPhaseInstallment = totalCommitments + monthlyInterest; // القسط الشهري للمرحلة الأولى
   const commitmentPercentage = ((firstPhaseInstallment / salary) * 100).toFixed(2); // نسبة الالتزامات مع القسط
@@ -429,109 +384,100 @@ function calculateInstallment() {
     discount: discount,
     totalInterest: totalInterest,
     totalUnitWithInterest: totalUnitWithInterest,
-    message: financingMessage
+    financingMessage: financingMessage,
   });
 }
 
+// دالة لفتح نافذة الحجز
+function openModal(unitNumber) {
+  selectedUnitNumber = unitNumber;
+  document.getElementById("modal").style.display = "flex";
+}
 
+// دالة لإغلاق نافذة الحجز
+function closeModal() {
+  document.getElementById("modal").style.display = "none";
+}
 
-function openInstallmentModal() {
-      document.getElementById("installment-modal").style.display = "flex";
+// دالة لجلب بيانات الوحدات وعرضها في الجدول
+const apiUrl = "https://script.google.com/macros/s/AKfycbzvTVkJdK_tsail2y1dkGW1EUMMuJW6mHoyziyNLMQc_bP7DRGzLj9mnVYz1t4Jtb91/exec";
+let selectedUnitNumber = null;
+
+async function fetchData() {
+  try {
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+
+    if (Array.isArray(data)) {
+      const tableBody = document.querySelector("#units-table tbody");
+      tableBody.innerHTML = "";
+
+      data.forEach((unit) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${unit.unitNumber}</td>
+          <td>${unit.floorNumber}</td>
+          <td>${unit.marketPrice}</td>
+          <td>${unit.discountedPrice}</td>
+          <td>${unit.size}</td>
+          <td><a href="${unit.planLink}" target="_blank">عرض المخطط</a></td>
+          <td><button class="btn" onclick="openModal('${unit.unitNumber}')">حجز</button></td>
+        `;
+        tableBody.appendChild(row);
+      });
+    } else if (data.error) {
+      alert(data.error);
     }
+  } catch (error) {
+    console.error("حدث خطأ أثناء جلب البيانات:", error);
+    alert("حدث خطأ أثناء جلب البيانات. يرجى المحاولة لاحقًا.");
+  }
+}
 
-    function closeInstallmentModal() {
-      document.getElementById("installment-modal").style.display = "none";
+// دالة لحجز الوحدة
+async function reserveUnit() {
+  const userId = document.getElementById("userId").value;
+  const phone = document.getElementById("phone").value;
+
+  if (!userId || !phone) {
+    alert("يجب إدخال رقم الهوية ورقم الجوال لإتمام الحجز.");
+    return;
+  }
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        unitNumber: selectedUnitNumber,
+        userId: userId,
+        phone: phone,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (result.error) {
+      alert(result.error);
+    } else {
+      alert(result.success);
+      closeModal();
+      fetchData(); // تحديث الجدول بعد الحجز
     }
+  } catch (error) {
+    console.error("حدث خطأ أثناء الحجز:", error);
+    alert("حدث خطأ أثناء الحجز. يرجى المحاولة لاحقًا.");
+  }
+}
 
-    const apiUrl = "https://script.google.com/macros/s/AKfycbzvTVkJdK_tsail2y1dkGW1EUMMuJW6mHoyziyNLMQc_bP7DRGzLj9mnVYz1t4Jtb91/exec";
-    let selectedUnitNumber = null; // لتخزين رقم الوحدة المحددة
+// إضافة الحدث على زر "احجز الآن"
+document.getElementById("confirmBooking").addEventListener("click", reserveUnit);
 
-    async function fetchData() {
-      try {
-        const response = await fetch(apiUrl);
-        const data = await response.json();
+// استدعاء الدالة لجلب البيانات عند تحميل الصفحة
+fetchData();
 
-        if (Array.isArray(data)) {
-          const tableBody = document.querySelector("#units-table tbody");
-          tableBody.innerHTML = ""; 
-
-          data.forEach(unit => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-              <td>${unit.unitNumber}</td>
-              <td>${unit.floorNumber}</td>
-              <td>${unit.marketPrice}</td>
-              <td>${unit.discountedPrice}</td>
-              <td>${unit.size}</td>
-              <td><a href="${unit.planLink}" target="_blank">عرض المخطط</a></td>
-              <td><button class="btn" onclick="openModal('${unit.unitNumber}')">حجز</button></td>
-            `;
-            tableBody.appendChild(row);
-          });
-        } else if (data.error) {
-          alert(data.error);
-        }
-      } catch (error) {
-        console.error("حدث خطأ أثناء جلب البيانات:", error);
-        alert("حدث خطأ أثناء جلب البيانات. يرجى المحاولة لاحقًا.");
-      }
-    }
-        // دالة لحجز الوحدة
-    async function reserveUnit() {
-      const userId = document.getElementById("userId").value;
-      const phone = document.getElementById("phone").value;
-
-      if (!userId || !phone) {
-        alert("يجب إدخال رقم الهوية ورقم الجوال لإتمام الحجز.");
-        return;
-      }
-
-      try {
-        const response = await fetch(apiUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-          },
-          body: new URLSearchParams({
-            unitNumber: selectedUnitNumber,
-            userId: userId,
-            phone: phone
-          })
-        });
-
-        const result = await response.json();
-
-        if (result.error) {
-          alert(result.error);
-        } else {
-          alert(result.success);
-          closeModal();
-          fetchData(); // تحديث الجدول بعد الحجز
-        }
-      } catch (error) {
-        console.error("حدث خطأ أثناء الحجز:", error);
-        alert("حدث خطأ أثناء الحجز. يرجى المحاولة لاحقًا.");
-      }
-    }
-
-    // إضافة الحدث على زر "احجز الآن"
-    document.getElementById("confirmBooking").addEventListener("click", reserveUnit);
-
-    function openModal(unitNumber) {
-      selectedUnitNumber = unitNumber;
-      document.getElementById("modal").style.display = "flex";
-    }
-
-    function closeModal() {
-      document.getElementById("modal").style.display = "none";
-    }
-
-    document.getElementById("confirmBooking").addEventListener("click", reserveUnit);
-
-    fetchData();
   </script>
-  <footer>
-    © 2024 - نظام حجز الوحدات السكنية
-  </footer>
 </body>
 </html>
