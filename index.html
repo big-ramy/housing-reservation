@@ -73,30 +73,12 @@
     td {
       font-size: 14px;
     }
-.filters {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 20px;
-      margin: 20px 0;
-    }
+#price-slider, #size-slider {
+  margin: 10px 0;
+  width: 200px;
+}
 
-    .filter-item {
-      text-align: center;
-    }
-
-    .filter-item label {
-      display: block;
-      margin-bottom: 10px;
-      font-weight: bold;
-    }
-
-    .slider {
-      margin: 10px auto;
-      width: 200px;
-    }
-
-    select {
+select {
       padding: 5px;
       border: 1px solid #ccc;
       border-radius: 4px;
@@ -363,28 +345,24 @@
 
    <h1>الوحدات السكنية المتاحة</h1>
 
-  <div class="filters">
-    <div class="filter-item">
-      <label>تصفية السعر (ريال)</label>
-      <div id="price-slider" class="slider"></div>
-      <span id="price-label">0 - 1,000,000</span>
-    </div>
-
-    <div class="filter-item">
-      <label>تصفية المساحة (متر²)</label>
-      <div id="size-slider" class="slider"></div>
-      <span id="size-label">0 - 500</span>
-    </div>
-
-    <div class="filter-item">
-      <label>نوع الوحدة</label>
-      <select id="unit-type" onchange="applyFilter()">
-        <option value="">الكل</option>
-        <option value="شقة">شقة</option>
-        <option value="دوبلكس">دوبلكس</option>
-      </select>
-    </div>
+ <div style="display: flex; justify-content: center; gap: 20px; margin: 20px 0;">
+  <div>
+    <label>تصفية السعر (ريال):</label>
+    <div id="price-slider"></div>
   </div>
+  <div>
+    <label>تصفية المساحة (متر²):</label>
+    <div id="size-slider"></div>
+  </div>
+  <div>
+    <label>نوع الوحدة:</label>
+    <select id="unitTypeFilter" onchange="applyFilter()">
+      <option value="all">جميع الأنواع</option>
+      <option value="شقة">شقة</option>
+      <option value="دوبلكس">دوبلكس</option>
+    </select>
+  </div>
+</div>
 
 
   <!-- جدول الوحدات -->
@@ -706,50 +684,63 @@ function openInstallmentModal() {
       setupSliders();
     });
     
-    function setupSliders() {
-      const priceSlider = document.getElementById("price-slider");
-      const sizeSlider = document.getElementById("size-slider");
+function setupSliders() {
+  const priceSlider = document.getElementById("price-slider");
+  noUiSlider.create(priceSlider, {
+    start: [150000, 1000000],
+    connect: true,
+    range: {
+      min: 0,
+      max: 1000000,
+    },
+    tooltips: true,
+    format: {
+      to: (value) => Math.round(value),
+      from: (value) => Number(value),
+    },
+  });
 
-      noUiSlider.create(priceSlider, {
-        start: [0, 1000000],
-        connect: true,
-        range: {
-          min: 0,
-          max: 1000000
-        },
-        step: 10000,
-        format: {
-          to: value => Math.round(value),
-          from: value => Number(value)
-        }
-      });
+  const sizeSlider = document.getElementById("size-slider");
+  noUiSlider.create(sizeSlider, {
+    start: [0, 500],
+    connect: true,
+    range: {
+      min: 0,
+      max: 500,
+    },
+    tooltips: true,
+    format: {
+      to: (value) => Math.round(value),
+      from: (value) => Number(value),
+    },
+  });
 
-      noUiSlider.create(sizeSlider, {
-        start: [0, 500],
-        connect: true,
-        range: {
-          min: 0,
-          max: 500
-        },
-        step: 10,
-        format: {
-          to: value => Math.round(value),
-          from: value => Number(value)
-        }
-      });
+  // Event listeners for sliders
+  priceSlider.noUiSlider.on("update", applyFilter);
+  sizeSlider.noUiSlider.on("update", applyFilter);
+}
 
-      priceSlider.noUiSlider.on("update", () => {
-        const values = priceSlider.noUiSlider.get();
-        document.getElementById("price-label").textContent = `${values[0]} - ${values[1]}`;
-        applyFilter();
-      });
+    
+function applyFilter() {
+  const priceRange = priceSlider.noUiSlider.get().map(Number);
+  const sizeRange = sizeSlider.noUiSlider.get().map(Number);
+  const unitType = document.getElementById("unitTypeFilter").value;
 
-      sizeSlider.noUiSlider.on("update", () => {
-        const values = sizeSlider.noUiSlider.get();
-        document.getElementById("size-label").textContent = `${values[0]} - ${values[1]}`;
-        applyFilter();
-      });
-    }
+  const tableBody = document.querySelector("#units-table tbody");
+  const rows = Array.from(tableBody.rows);
+
+  rows.forEach((row) => {
+    const price = parseFloat(row.cells[3].textContent);
+    const size = parseFloat(row.cells[5].textContent);
+    const type = row.cells[0].textContent;
+
+    const matchesPrice = price >= priceRange[0] && price <= priceRange[1];
+    const matchesSize = size >= sizeRange[0] && size <= sizeRange[1];
+    const matchesType = unitType === "all" || type === unitType;
+
+    row.style.display = matchesPrice && matchesSize && matchesType ? "" : "none";
+  });
+}
 
       // تحديث الجدول
     function updateTable(units) {
