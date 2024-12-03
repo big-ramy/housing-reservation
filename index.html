@@ -418,6 +418,10 @@
     </div>
   </div>
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.js"></script>
+
+  
   <script>
 // دالة فتح نافذة الفيديو
 function openVideoModal(videoSrc) {
@@ -697,8 +701,10 @@ function openInstallmentModal() {
 
     document.getElementById("confirmBooking").addEventListener("click", reserveUnit);
 
-    fetchData();
-    setupSliders();
+    document.addEventListener("DOMContentLoaded", () => {
+      fetchData();
+      setupSliders();
+    });
     
     function setupSliders() {
       const priceSlider = document.getElementById("price-slider");
