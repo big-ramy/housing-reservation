@@ -405,19 +405,24 @@ function openResultModal(message) {
   const modal = document.getElementById("result-modal");
   const resultMessage = document.getElementById("result-message");
 
+  // تحديد النصوص بناءً على وجود الالتزامات
+  const firstPhaseLabel = message.hideSecondPhase ? "القسط" : "القسط + الالتزامات المرحلة الأولى";
+
   // تنسيق النتيجة
   resultMessage.innerHTML = `
     <div style="text-align: right; font-size: 16px; line-height: 1.8;">
       <strong style="font-size: 18px; color: #333;">النتائج:</strong><br>
       <hr style="margin: 10px 0;">
-      <strong>القسط + الالتزامات المرحلة الأولى:</strong> <span style="color: #007bff;">${message.firstPhaseInstallment.toFixed(2)} ريال</span><br>
+      <strong>${firstPhaseLabel}:</strong> <span style="color: #007bff;">${message.firstPhaseInstallment.toFixed(2)} ريال</span><br>
       <strong>مدة المرحلة الأولى:</strong> <span style="color: #007bff;">${message.firstPhaseDuration} شهر</span><br>
       <strong>نسبة الاستقطاع في المرحلة الأولى:</strong> <span style="color: #ff6347;">${message.firstPhaseCommitmentPercentage}%</span><br>
       <hr style="margin: 10px 0;">
-      <strong>القسط في المرحلة الثانية:</strong> <span style="color: #28a745;">${message.secondPhaseInstallment.toFixed(2)} ريال</span><br>
-      <strong>مدة المرحلة الثانية:</strong> <span style="color: #28a745;">${message.secondPhaseDuration} شهر</span><br>
-      <strong>نسبة الاستقطاع في المرحلة الثانية:</strong> <span style="color: #ff6347;">${message.secondPhaseCommitmentPercentage}%</span><br>
-      <hr style="margin: 10px 0;">
+      ${!message.hideSecondPhase ? `
+        <strong>القسط في المرحلة الثانية:</strong> <span style="color: #28a745;">${message.secondPhaseInstallment.toFixed(2)} ريال</span><br>
+        <strong>مدة المرحلة الثانية:</strong> <span style="color: #28a745;">${message.secondPhaseDuration} شهر</span><br>
+        <strong>نسبة الاستقطاع في المرحلة الثانية:</strong> <span style="color: #ff6347;">${message.secondPhaseCommitmentPercentage}%</span><br>
+        <hr style="margin: 10px 0;">
+      ` : ""}
       <strong>مبلغ الوحدة بعد الخصم:</strong> <span style="color: #ffc107;">${message.unitAmount.toFixed(2)} ريال</span><br>
       <strong>تم خصم:</strong> <span style="color: #dc3545;">${message.discount} ريال</span><br>
       <hr style="margin: 10px 0;">
@@ -434,7 +439,11 @@ function openResultModal(message) {
 }
 
 
-
+ // دالة إغلاق نافذة النتيجة
+  function closeResultModal() {
+    document.getElementById("result-modal").style.display = "none";
+  }
+    
   // دالة إغلاق نافذة النتيجة
  function calculateInstallment() {
   const salary = parseFloat(document.getElementById("salary").value) || 0;
@@ -481,15 +490,13 @@ function openResultModal(message) {
       firstPhaseInstallment: installment,
       firstPhaseDuration: durationMonths,
       firstPhaseCommitmentPercentage: commitmentPercentage,
-      secondPhaseInstallment: 0, // لا توجد مرحلة ثانية
-      secondPhaseDuration: 0,
-      secondPhaseCommitmentPercentage: 0,
       unitAmount: unitAmount,
       discount: discount,
       totalInterest: totalInterest,
       totalUnitWithInterest: unitAmount + totalInterest,
       financingMessage: financingMessage,
       requiredDownPayment: requiredDownPayment,
+      hideSecondPhase: true, // إخفاء المرحلة الثانية
     });
     return;
   }
@@ -530,6 +537,7 @@ function openResultModal(message) {
     totalUnitWithInterest: totalUnitWithInterest,
     financingMessage: financingMessage,
     requiredDownPayment: requiredDownPayment,
+    hideSecondPhase: false, // إظهار المرحلة الثانية
   });
 }
 
