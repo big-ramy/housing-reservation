@@ -73,6 +73,35 @@
     td {
       font-size: 14px;
     }
+.filters {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .filter-item {
+      text-align: center;
+    }
+
+    .filter-item label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .slider {
+      margin: 10px auto;
+      width: 200px;
+    }
+
+    select {
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
 
     .btn {
       background-color: #28a745;
@@ -333,37 +362,29 @@
   </div>
 
    <h1>الوحدات السكنية المتاحة</h1>
- <div style="margin: 20px;">
-  <h3>تصفية الوحدات</h3>
 
-  <div style="margin-bottom: 20px;">
-    <label>السعر:</label>
-    <span id="priceRangeLabel">0 - 1000000</span> ريال
-    <br>
-    <input id="priceRange" type="range" min="0" max="1000000" step="10000" value="0" oninput="updatePriceLabel()">
-    <input id="priceRangeMax" type="hidden" value="1000000">
+  <div class="filters">
+    <div class="filter-item">
+      <label>تصفية السعر (ريال)</label>
+      <div id="price-slider" class="slider"></div>
+      <span id="price-label">0 - 1,000,000</span>
+    </div>
+
+    <div class="filter-item">
+      <label>تصفية المساحة (متر²)</label>
+      <div id="size-slider" class="slider"></div>
+      <span id="size-label">0 - 500</span>
+    </div>
+
+    <div class="filter-item">
+      <label>نوع الوحدة</label>
+      <select id="unit-type" onchange="applyFilter()">
+        <option value="">الكل</option>
+        <option value="شقة">شقة</option>
+        <option value="دوبلكس">دوبلكس</option>
+      </select>
+    </div>
   </div>
-
-  <div style="margin-bottom: 20px;">
-    <label>المساحة:</label>
-    <span id="sizeRangeLabel">0 - 500</span> متر²
-    <br>
-    <input id="sizeRange" type="range" min="0" max="500" step="10" value="0" oninput="updateSizeLabel()">
-    <input id="sizeRangeMax" type="hidden" value="500">
-  </div>
-
-  <div style="margin-bottom: 20px;">
-    <label>نوع الوحدة:</label>
-    <select id="unitTypeFilter">
-      <option value="">الكل</option>
-      <option value="شقة">شقة</option>
-      <option value="فيلا">فيلا</option>
-      <option value="استوديو">استوديو</option>
-    </select>
-  </div>
-
-  <button onclick="applySliderFilter()" class="btn" style="background-color: #007bff;">تطبيق التصفية</button>
-</div>
 
 
   <!-- جدول الوحدات -->
@@ -677,58 +698,64 @@ function openInstallmentModal() {
     document.getElementById("confirmBooking").addEventListener("click", reserveUnit);
 
     fetchData();
+    setupSliders();
+    
+    function setupSliders() {
+      const priceSlider = document.getElementById("price-slider");
+      const sizeSlider = document.getElementById("size-slider");
 
- function applySliderFilter() {
-  const priceMin = parseFloat(document.getElementById("priceRange").value) || 0;
-  const priceMax = parseFloat(document.getElementById("priceRangeMax").value) || 0;
-  const sizeMin = parseFloat(document.getElementById("sizeRange").value) || 0;
-  const sizeMax = parseFloat(document.getElementById("sizeRangeMax").value) || 0;
-  const unitType = document.getElementById("unitTypeFilter").value;
+      noUiSlider.create(priceSlider, {
+        start: [0, 1000000],
+        connect: true,
+        range: {
+          min: 0,
+          max: 1000000
+        },
+        step: 10000,
+        format: {
+          to: value => Math.round(value),
+          from: value => Number(value)
+        }
+      });
 
-  fetch(apiUrl)
-    .then(response => response.json())
-    .then(data => {
-      if (!Array.isArray(data)) {
-        alert(data.error || "لا توجد بيانات لعرضها.");
+      noUiSlider.create(sizeSlider, {
+        start: [0, 500],
+        connect: true,
+        range: {
+          min: 0,
+          max: 500
+        },
+        step: 10,
+        format: {
+          to: value => Math.round(value),
+          from: value => Number(value)
+        }
+      });
+
+      priceSlider.noUiSlider.on("update", () => {
+        const values = priceSlider.noUiSlider.get();
+        document.getElementById("price-label").textContent = `${values[0]} - ${values[1]}`;
+        applyFilter();
+      });
+
+      sizeSlider.noUiSlider.on("update", () => {
+        const values = sizeSlider.noUiSlider.get();
+        document.getElementById("size-label").textContent = `${values[0]} - ${values[1]}`;
+        applyFilter();
+      });
+    }
+
+      // تحديث الجدول
+    function updateTable(units) {
+      const tableBody = document.querySelector("#units-table tbody");
+      tableBody.innerHTML = "";
+
+      if (units.length === 0) {
+        tableBody.innerHTML = "<tr><td colspan='4'>لا توجد وحدات مطابقة.</td></tr>";
         return;
       }
 
-      const filteredData = data.filter(unit => {
-        const matchesPrice = unit.marketPrice >= priceMin && unit.marketPrice <= priceMax;
-        const matchesSize = unit.size >= sizeMin && unit.size <= sizeMax;
-        const matchesType = unitType === "" || unit.unitType === unitType;
-        return matchesPrice && matchesSize && matchesType;
-      });
-
-      updateTable(filteredData);
-    })
-    .catch(error => {
-      console.error("حدث خطأ أثناء التصفية:", error);
-      alert("حدث خطأ أثناء التصفية. يرجى المحاولة لاحقًا.");
-    });
-}
-function updatePriceLabel() {
-  const priceMin = document.getElementById("priceRange").value;
-  const priceMax = document.getElementById("priceRangeMax").value;
-  document.getElementById("priceRangeLabel").textContent = `${priceMin} - ${priceMax}`;
-}
-
-function updateSizeLabel() {
-  const sizeMin = document.getElementById("sizeRange").value;
-  const sizeMax = document.getElementById("sizeRangeMax").value;
-  document.getElementById("sizeRangeLabel").textContent = `${sizeMin} - ${sizeMax}`;
-}
-
-    function updateTable(filteredData) {
-  const tableBody = document.querySelector("#units-table tbody");
-  tableBody.innerHTML = "";
-
-  if (filteredData.length === 0) {
-    tableBody.innerHTML = "<tr><td colspan='9'>لا توجد وحدات مطابقة للتصفية.</td></tr>";
-    return;
-  }
-
-  filteredData.forEach(unit => {
+      units.forEach(unit => {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${unit.unitType}</td>
