@@ -434,6 +434,12 @@ div {
 
   
   <script>
+document.addEventListener("DOMContentLoaded", () => {
+  fetchData();
+  applyFilter(); // تحديث عداد الوحدات المتاحة عند تحميل الصفحة
+});
+
+    
 // دالة فتح نافذة الفيديو
 function openVideoModal(videoSrc) {
   const modal = document.getElementById("video-modal");
@@ -636,7 +642,6 @@ function openInstallmentModal() {
         if (Array.isArray(data)) {
           const tableBody = document.querySelector("#units-table tbody");
           tableBody.innerHTML = ""; 
-           applyFilter();
           data.forEach(unit => {
             const row = document.createElement("tr");
             row.innerHTML = `
