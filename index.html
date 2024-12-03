@@ -337,6 +337,7 @@
   <table id="units-table">
     <thead>
       <tr>
+        <th>نوع الوحدة</th>
         <th>رقم الوحدة</th>
         <th>رقم الدور</th>
         <th>القيمة السوقية</th>
@@ -570,6 +571,7 @@ function openInstallmentModal() {
           data.forEach(unit => {
             const row = document.createElement("tr");
             row.innerHTML = `
+             <td>${unit.unitType}</td>
               <td>${unit.unitNumber}</td>
               <td>${unit.floorNumber}</td>
               <td>${unit.marketPrice}</td>
