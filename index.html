@@ -333,6 +333,38 @@
   </div>
 
    <h1>الوحدات السكنية المتاحة</h1>
+  <div style="margin: 20px;">
+  <h3>تصفية الوحدات</h3>
+
+  <div style="margin-bottom: 20px;">
+    <label>السعر:</label>
+    <span id="priceRangeLabel">0 - 1000000</span> ريال
+    <br>
+    <input id="priceMin" type="range" min="0" max="1000000" step="10000" value="0" oninput="updatePriceLabel()">
+    <input id="priceMax" type="range" min="0" max="1000000" step="10000" value="1000000" oninput="updatePriceLabel()">
+  </div>
+
+  <div style="margin-bottom: 20px;">
+    <label>المساحة:</label>
+    <span id="sizeRangeLabel">0 - 500</span> متر²
+    <br>
+    <input id="sizeMin" type="range" min="0" max="500" step="10" value="0" oninput="updateSizeLabel()">
+    <input id="sizeMax" type="range" min="0" max="500" step="10" value="500" oninput="updateSizeLabel()">
+  </div>
+
+  <div style="margin-bottom: 20px;">
+    <label>نوع الوحدة:</label>
+    <select id="unitTypeFilter">
+      <option value="">الكل</option>
+      <option value="شقة">شقة</option>
+      <option value="فيلا">فيلا</option>
+      <option value="استوديو">استوديو</option>
+    </select>
+  </div>
+
+  <button onclick="applySliderFilter()" class="btn" style="background-color: #007bff;">تطبيق التصفية</button>
+</div>
+
   <!-- جدول الوحدات -->
   <table id="units-table">
     <thead>
@@ -556,6 +588,38 @@ function openInstallmentModal() {
       document.getElementById("installment-modal").style.display = "none";
     }
 
+function applySliderFilter() {
+  const priceMin = parseFloat(document.getElementById("priceMin").value) || 0;
+  const priceMax = parseFloat(document.getElementById("priceMax").value) || 0;
+  const sizeMin = parseFloat(document.getElementById("sizeMin").value) || 0;
+  const sizeMax = parseFloat(document.getElementById("sizeMax").value) || 0;
+  const unitType = document.getElementById("unitTypeFilter").value; // الحصول على نوع الوحدة
+
+  fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
+      if (!Array.isArray(data)) {
+        alert(data.error || "لا توجد بيانات لعرضها.");
+        return;
+      }
+
+      const filteredData = data.filter(unit => {
+        const matchesPrice = unit.marketPrice >= priceMin && unit.marketPrice <= priceMax;
+        const matchesSize = unit.size >= sizeMin && unit.size <= sizeMax;
+        const matchesType = unitType === "" || unit.unitType === unitType; // التحقق من نوع الوحدة
+        return matchesPrice && matchesSize && matchesType;
+      });
+
+      updateTable(filteredData);
+    })
+    .catch(error => {
+      console.error("حدث خطأ أثناء التصفية:", error);
+      alert("حدث خطأ أثناء التصفية. يرجى المحاولة لاحقًا.");
+    });
+}
+
+    
+
     const apiUrl = "https://script.google.com/macros/s/AKfycbzp6np10pfDJjKKpnGOGg95VXwKh2IakB_EIdgulFG6wnu7dLKnhusmk0d7Vz0AJyQc/exec";
     let selectedUnitNumber = null; // لتخزين رقم الوحدة المحددة
 
@@ -571,7 +635,7 @@ function openInstallmentModal() {
           data.forEach(unit => {
             const row = document.createElement("tr");
             row.innerHTML = `
-             <td>${unit.unitType}</td>
+              <td>${unit.unitType}</td>
               <td>${unit.unitNumber}</td>
               <td>${unit.floorNumber}</td>
               <td>${unit.marketPrice}</td>
