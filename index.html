@@ -636,7 +636,7 @@ function openInstallmentModal() {
         if (Array.isArray(data)) {
           const tableBody = document.querySelector("#units-table tbody");
           tableBody.innerHTML = ""; 
-
+           applyFilter();
           data.forEach(unit => {
             const row = document.createElement("tr");
             row.innerHTML = `
@@ -712,10 +712,7 @@ function openInstallmentModal() {
 
     document.getElementById("confirmBooking").addEventListener("click", reserveUnit);
 
-    document.addEventListener("DOMContentLoaded", () => {
-      fetchData();
-      applyFilter();
-    });
+
     
 function updatePriceLabel() {
   const min = parseInt(document.getElementById("price-min").value);
