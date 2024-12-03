@@ -342,6 +342,7 @@
         <th>القيمة السوقية</th>
         <th>القيمة قبل الدعم</th>
         <th>المساحة</th>
+        <th>الموقع على الخارطة</th>
         <th>رابط المخطط</th>
         <th>إجراء</th>
       </tr>
@@ -554,7 +555,7 @@ function openInstallmentModal() {
       document.getElementById("installment-modal").style.display = "none";
     }
 
-    const apiUrl = "https://script.google.com/macros/s/AKfycbxKxVCedeb8P_HHvxdrlCroIyxzcH3n9Mmzcb15mi2l7mrQ_uKWEfjfxNHnHI4XYCKK/exec";
+    const apiUrl = "https://script.google.com/macros/s/AKfycbzla0-Jpkjyw0PXTFaMoVdAkxdHwX8pekxmjyFsA7gwnDoue2mSQl6ql5mv6miL_xMP/exec";
     let selectedUnitNumber = null; // لتخزين رقم الوحدة المحددة
 
     async function fetchData() {
@@ -574,6 +575,7 @@ function openInstallmentModal() {
               <td>${unit.marketPrice}</td>
               <td>${unit.discountedPrice}</td>
               <td>${unit.size}</td>
+              <td><a href="${unit.unitInMap}" target="_blank">عرض الموقع</a></td>
               <td><a href="${unit.planLink}" target="_blank">عرض المخطط</a></td>
               <td><button class="btn" onclick="openModal('${unit.unitNumber}')">حجز</button></td>
             `;
