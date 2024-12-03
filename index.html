@@ -333,23 +333,23 @@
   </div>
 
    <h1>الوحدات السكنية المتاحة</h1>
-  <div style="margin: 20px;">
+ <div style="margin: 20px;">
   <h3>تصفية الوحدات</h3>
 
   <div style="margin-bottom: 20px;">
     <label>السعر:</label>
     <span id="priceRangeLabel">0 - 1000000</span> ريال
     <br>
-    <input id="priceMin" type="range" min="0" max="1000000" step="10000" value="0" oninput="updatePriceLabel()">
-    <input id="priceMax" type="range" min="0" max="1000000" step="10000" value="1000000" oninput="updatePriceLabel()">
+    <input id="priceRange" type="range" min="0" max="1000000" step="10000" value="0" oninput="updatePriceLabel()">
+    <input id="priceRangeMax" type="hidden" value="1000000">
   </div>
 
   <div style="margin-bottom: 20px;">
     <label>المساحة:</label>
     <span id="sizeRangeLabel">0 - 500</span> متر²
     <br>
-    <input id="sizeMin" type="range" min="0" max="500" step="10" value="0" oninput="updateSizeLabel()">
-    <input id="sizeMax" type="range" min="0" max="500" step="10" value="500" oninput="updateSizeLabel()">
+    <input id="sizeRange" type="range" min="0" max="500" step="10" value="0" oninput="updateSizeLabel()">
+    <input id="sizeRangeMax" type="hidden" value="500">
   </div>
 
   <div style="margin-bottom: 20px;">
@@ -364,6 +364,7 @@
 
   <button onclick="applySliderFilter()" class="btn" style="background-color: #007bff;">تطبيق التصفية</button>
 </div>
+
 
   <!-- جدول الوحدات -->
   <table id="units-table">
@@ -587,39 +588,7 @@ function openInstallmentModal() {
     function closeInstallmentModal() {
       document.getElementById("installment-modal").style.display = "none";
     }
-
-function applySliderFilter() {
-  const priceMin = parseFloat(document.getElementById("priceMin").value) || 0;
-  const priceMax = parseFloat(document.getElementById("priceMax").value) || 0;
-  const sizeMin = parseFloat(document.getElementById("sizeMin").value) || 0;
-  const sizeMax = parseFloat(document.getElementById("sizeMax").value) || 0;
-  const unitType = document.getElementById("unitTypeFilter").value; // الحصول على نوع الوحدة
-
-  fetch(apiUrl)
-    .then(response => response.json())
-    .then(data => {
-      if (!Array.isArray(data)) {
-        alert(data.error || "لا توجد بيانات لعرضها.");
-        return;
-      }
-
-      const filteredData = data.filter(unit => {
-        const matchesPrice = unit.marketPrice >= priceMin && unit.marketPrice <= priceMax;
-        const matchesSize = unit.size >= sizeMin && unit.size <= sizeMax;
-        const matchesType = unitType === "" || unit.unitType === unitType; // التحقق من نوع الوحدة
-        return matchesPrice && matchesSize && matchesType;
-      });
-
-      updateTable(filteredData);
-    })
-    .catch(error => {
-      console.error("حدث خطأ أثناء التصفية:", error);
-      alert("حدث خطأ أثناء التصفية. يرجى المحاولة لاحقًا.");
-    });
-}
-
-    
-
+  
     const apiUrl = "https://script.google.com/macros/s/AKfycbzp6np10pfDJjKKpnGOGg95VXwKh2IakB_EIdgulFG6wnu7dLKnhusmk0d7Vz0AJyQc/exec";
     let selectedUnitNumber = null; // لتخزين رقم الوحدة المحددة
 
@@ -708,6 +677,74 @@ function applySliderFilter() {
     document.getElementById("confirmBooking").addEventListener("click", reserveUnit);
 
     fetchData();
+
+ function applySliderFilter() {
+  const priceMin = parseFloat(document.getElementById("priceRange").value) || 0;
+  const priceMax = parseFloat(document.getElementById("priceRangeMax").value) || 0;
+  const sizeMin = parseFloat(document.getElementById("sizeRange").value) || 0;
+  const sizeMax = parseFloat(document.getElementById("sizeRangeMax").value) || 0;
+  const unitType = document.getElementById("unitTypeFilter").value;
+
+  fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
+      if (!Array.isArray(data)) {
+        alert(data.error || "لا توجد بيانات لعرضها.");
+        return;
+      }
+
+      const filteredData = data.filter(unit => {
+        const matchesPrice = unit.marketPrice >= priceMin && unit.marketPrice <= priceMax;
+        const matchesSize = unit.size >= sizeMin && unit.size <= sizeMax;
+        const matchesType = unitType === "" || unit.unitType === unitType;
+        return matchesPrice && matchesSize && matchesType;
+      });
+
+      updateTable(filteredData);
+    })
+    .catch(error => {
+      console.error("حدث خطأ أثناء التصفية:", error);
+      alert("حدث خطأ أثناء التصفية. يرجى المحاولة لاحقًا.");
+    });
+}
+function updatePriceLabel() {
+  const priceMin = document.getElementById("priceRange").value;
+  const priceMax = document.getElementById("priceRangeMax").value;
+  document.getElementById("priceRangeLabel").textContent = `${priceMin} - ${priceMax}`;
+}
+
+function updateSizeLabel() {
+  const sizeMin = document.getElementById("sizeRange").value;
+  const sizeMax = document.getElementById("sizeRangeMax").value;
+  document.getElementById("sizeRangeLabel").textContent = `${sizeMin} - ${sizeMax}`;
+}
+
+    function updateTable(filteredData) {
+  const tableBody = document.querySelector("#units-table tbody");
+  tableBody.innerHTML = "";
+
+  if (filteredData.length === 0) {
+    tableBody.innerHTML = "<tr><td colspan='9'>لا توجد وحدات مطابقة للتصفية.</td></tr>";
+    return;
+  }
+
+  filteredData.forEach(unit => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${unit.unitType}</td>
+      <td>${unit.unitNumber}</td>
+      <td>${unit.floorNumber}</td>
+      <td>${unit.marketPrice}</td>
+      <td>${unit.discountedPrice}</td>
+      <td>${unit.size}</td>
+      <td><a href="${unit.unitInMap}" target="_blank">عرض الموقع</a></td>
+      <td><a href="${unit.planLink}" target="_blank">عرض المخطط</a></td>
+      <td><button class="btn" onclick="openModal('${unit.unitNumber}')">حجز</button></td>
+    `;
+    tableBody.appendChild(row);
+  });
+}
+
   </script>
   <footer>
     © 2024 - نظام حجز الوحدات السكنية
