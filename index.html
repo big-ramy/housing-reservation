@@ -436,11 +436,7 @@ function openResultModal(message) {
 
 
   // دالة إغلاق نافذة النتيجة
-  function closeResultModal() {
-    document.getElementById("result-modal").style.display = "none";
-  }
-
-function calculateInstallment() {
+ function calculateInstallment() {
   const salary = parseFloat(document.getElementById("salary").value) || 0;
   let unitAmount = parseFloat(document.getElementById("loanAmount").value) || 0;
   const durationMonths = parseFloat(document.getElementById("durationMonths").value) || 0;
@@ -463,19 +459,48 @@ function calculateInstallment() {
   // حساب الفائدة الشهرية
   const monthlyInterest = totalInterest / durationMonths;
 
-  // المرحلة الأولى (قسط + الالتزامات الحالية)
-  const maxCommitmentMonths = Math.max(...commitments.map(c => c.months));
+  // حساب الالتزامات الإجمالية
   const totalCommitments = commitments.reduce((sum, c) => sum + c.amount, 0);
-
-  const firstPhaseDuration = maxCommitmentMonths;
-  const firstPhaseInstallment = monthlyInterest + totalCommitments;
-  const firstPhaseCommitmentPercentage = ((firstPhaseInstallment / salary) * 100).toFixed(2);
 
   let requiredDownPayment = 0; // الدفعة المقدمة إذا لزم الأمر
   let financingMessage = "";
 
+  if (totalCommitments === 0) {
+    // إذا لم تكن هناك التزامات، احسب القسط على مرحلة واحدة فقط
+    const installment = (unitAmount + totalInterest) / durationMonths;
+    const commitmentPercentage = ((installment / salary) * 100).toFixed(2);
+
+    if (commitmentPercentage > 65) {
+      requiredDownPayment = ((installment - salary * 0.65) * durationMonths);
+      financingMessage = `لا يمكن تمويلك إلا في حال وفرت دفعة قدرها ${requiredDownPayment.toFixed(2)} ريال وذلك لأن نسبة الاستقطاع تتجاوز 65%.`;
+    } else {
+      financingMessage = "التمويل ممكن بناءً على المعلومات المدخلة.";
+    }
+
+    openResultModal({
+      firstPhaseInstallment: installment,
+      firstPhaseDuration: durationMonths,
+      firstPhaseCommitmentPercentage: commitmentPercentage,
+      secondPhaseInstallment: 0, // لا توجد مرحلة ثانية
+      secondPhaseDuration: 0,
+      secondPhaseCommitmentPercentage: 0,
+      unitAmount: unitAmount,
+      discount: discount,
+      totalInterest: totalInterest,
+      totalUnitWithInterest: unitAmount + totalInterest,
+      financingMessage: financingMessage,
+      requiredDownPayment: requiredDownPayment,
+    });
+    return;
+  }
+
+  // المرحلة الأولى (قسط + الالتزامات الحالية)
+  const maxCommitmentMonths = Math.max(...commitments.map(c => c.months));
+  const firstPhaseDuration = maxCommitmentMonths;
+  const firstPhaseInstallment = monthlyInterest + totalCommitments;
+  const firstPhaseCommitmentPercentage = ((firstPhaseInstallment / salary) * 100).toFixed(2);
+
   if (firstPhaseCommitmentPercentage > 65) {
-    // إذا تجاوزت نسبة الاستقطاع 65%، نحسب الدفعة المطلوبة
     requiredDownPayment = ((firstPhaseInstallment - salary * 0.65) * firstPhaseDuration);
     financingMessage = `لا يمكن تمويلك إلا في حال وفرت دفعة قدرها ${requiredDownPayment.toFixed(2)} ريال وذلك لأن التزاماتك تعدت نسبة 65%.`;
   } else {
@@ -507,6 +532,7 @@ function calculateInstallment() {
     requiredDownPayment: requiredDownPayment,
   });
 }
+
 
 
 
