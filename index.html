@@ -219,7 +219,35 @@
     max-width: 500px;
     box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
   }
+  .btn {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 25px; /* تحسين الشكل ليكون دائري الزوايا */
+    font-size: 18px; /* تكبير الخط */
+    font-weight: bold;
+    transition: all 0.3s ease; /* تأثير التغيير التدريجي */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* إضافة ظل بسيط */
+  }
 
+  .btn:hover {
+    background-color: #218838;
+    transform: scale(1.05); /* تكبير الزر قليلاً عند التمرير */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); /* زيادة الظل */
+  }
+
+  .btn:active {
+    transform: scale(0.95); /* تقليل الحجم عند الضغط */
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15); /* تقليل الظل */
+  }
+
+  .btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    color: #666;
+  }
   /* الأجهزة الصغيرة */
   @media (max-width: 768px) {
     header {
@@ -245,7 +273,7 @@
 </head>
 <body>
   <!-- الشعار -->
-  <div id="all_content">
+  
   <header>
     <img src="https://media.licdn.com/dms/image/v2/C4D0BAQED93e7d7lWkQ/company-logo_200_200/company-logo_200_200/0/1630490580332?e=2147483647&v=beta&t=hCmFNUBkdnBTYQZvWm7qHm89w_zro06Rr-b2Eup0Ec8" alt="لوجو الشركة">
     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQiNel1DsK7PJmkRJp6xLUH8WAbZ6d0L1PVnw&s" alt="لوجو المشروع">
@@ -360,9 +388,9 @@
 
   </div>
 </div>
-</div>
 
 
+<div id="all_content">
   <!-- جدول الوحدات -->
   <table id="units-table">
     <thead>
@@ -382,7 +410,7 @@
       <!-- سيتم تعبئة الجدول ديناميكيًا -->
     </tbody>
   </table>
-
+</div>
   <!-- نافذة إدخال بيانات الحجز -->
   <div id="modal" class="modal">
     <div class="modal-content">
