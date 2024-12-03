@@ -119,6 +119,8 @@
       padding: 20px;
       border-radius: 8px;
       width: 90%;
+      font-size: 14px;
+      font-weight: bold;
       max-width: 700px;
       max-height: 80vh;
       overflow-y: auto;
@@ -282,6 +284,137 @@ input[type="range"]:focus {
 
 div {
   text-align: center;
+}
+
+
+/* الهواتف الذكية */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  header img {
+    height: 40px;
+    margin: 5px 0;
+  }
+
+  h1 {
+    font-size: 18px;
+    margin: 15px 0;
+  }
+
+  .info {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  table {
+    font-size: 12px;
+  }
+
+  th, td {
+    padding: 8px;
+  }
+
+  .models img {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    margin: 10px 0;
+  }
+
+  .video-buttons {
+    flex-direction: column;
+  }
+
+  .video-btn {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .installment-btn {
+    width: 100%;
+  }
+
+  .modal-content {
+    width: 95%;
+  }
+
+  .modal-content form {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .modal-content input, .modal-content select, .modal-content button {
+    width: 100%;
+    padding: 8px;
+  }
+
+  /* جدول الوحدات */
+  #units-table {
+    font-size: 12px;
+  }
+
+  th, td {
+    padding: 5px;
+  }
+
+  .filter-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .filter-container div {
+    width: 100%;
+  }
+}
+
+/* الأجهزة اللوحية */
+@media (min-width: 769px) and (max-width: 1024px) {
+  header img {
+    height: 50px;
+  }
+
+  h1 {
+    font-size: 22px;
+  }
+
+  .info {
+    font-size: 15px;
+    padding: 15px;
+  }
+
+  table {
+    font-size: 14px;
+  }
+
+  th, td {
+    padding: 10px;
+  }
+
+  .models img {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+  }
+
+  .video-buttons {
+    gap: 10px;
+  }
+
+  .installment-btn {
+    font-size: 14px;
+  }
+
+  .modal-content {
+    width: 90%;
+  }
+
+  .modal-content input, .modal-content select, .modal-content button {
+    padding: 10px;
+  }
 }
 
   </style>
