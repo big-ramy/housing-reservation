@@ -710,7 +710,6 @@ function openInstallmentModal() {
 
     document.addEventListener("DOMContentLoaded", () => {
       fetchData();
-      setupSliders();
     });
     
 function updatePriceLabel() {
@@ -750,7 +749,7 @@ function applyFilter() {
   const rows = Array.from(tableBody.rows);
 
   rows.forEach((row) => {
-    const price = parseFloat(row.cells[3].textContent);
+    const price = parseFloat(row.cells[4].textContent);
     const size = parseFloat(row.cells[5].textContent);
     const type = row.cells[0].textContent;
 
