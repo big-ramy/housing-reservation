@@ -389,6 +389,10 @@ div {
       <option value="شقة">شقة</option>
       <option value="دوبلكس">دوبلكس</option>
     </select>
+    <div id="filter-results" style="margin-top: 10px; font-size: 16px; color: #333;">
+  عدد الوحدات المتاحة: <span id="filtered-count">0</span>
+</div>
+
   </div>
 </div>
 
@@ -748,17 +752,27 @@ function applyFilter() {
   const tableBody = document.querySelector("#units-table tbody");
   const rows = Array.from(tableBody.rows);
 
-  rows.forEach((row) => {
-    const price = parseFloat(row.cells[4].textContent);
-    const size = parseFloat(row.cells[5].textContent);
-    const type = row.cells[0].textContent;
+  let visibleCount = 0; // عداد للوحدات المتاحة
 
-    const matchesPrice = price >= priceMin && price <= priceMax;
+  rows.forEach((row) => {
+    const priceBeforeSupport = parseFloat(row.cells[4].textContent); // القيمة قبل الدعم (العمود الرابع)
+    const size = parseFloat(row.cells[5].textContent); // المساحة
+    const type = row.cells[0].textContent; // نوع الوحدة
+
+    const matchesPrice = priceBeforeSupport >= priceMin && priceBeforeSupport <= priceMax;
     const matchesSize = size >= sizeMin && size <= sizeMax;
     const matchesType = unitType === "all" || type === unitType;
 
-    row.style.display = matchesPrice && matchesSize && matchesType ? "" : "none";
+    if (matchesPrice && matchesSize && matchesType) {
+      row.style.display = ""; // إظهار الصف
+      visibleCount++; // زيادة العداد
+    } else {
+      row.style.display = "none"; // إخفاء الصف
+    }
   });
+
+  // تحديث عدد الوحدات المتاحة
+  document.getElementById("filtered-count").textContent = visibleCount;
 }
 
 
