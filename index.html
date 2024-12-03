@@ -101,60 +101,69 @@
       font-size: 14px;
     }
 
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-    }
+  /* نافذة منبثقة عامة */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+  }
 
-    .modal-content {
-      background-color: white;
-      padding: 20px;
-      border-radius: 8px;
-      width: 90%;
-      max-width: 700px;
-      max-height: 80vh;
-      overflow-y: auto;
-      text-align: center;
-      box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
-    }
+  .modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    font-size: 16px;
+    line-height: 1.5;
+    text-align: center;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+  }
 
-    .modal-content form {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 10px;
-    }
+  .modal-content h2 {
+    margin-bottom: 15px;
+    font-size: 18px;
+  }
 
-    .modal-content input, .modal-content select {
-      flex: 1 1 calc(48% - 10px);
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
+  .modal-content p {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
 
-    .modal-content button {
-      flex: 1 1 100%;
-      margin-top: 10px;
-      padding: 10px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      cursor: pointer;
-      border-radius: 4px;
-      transition: background-color 0.3s ease;
-    }
+  .modal-content button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+  }
 
-    .modal-content button:hover {
-      background-color: #0056b3;
-    }
+  .modal-content button:hover {
+    background-color: #218838;
+  }
+
+  /* زر الإغلاق */
+  .close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    color: #333;
+    cursor: pointer;
+  }
 
     /* نافذة النتيجة */
     .result-modal {
@@ -318,18 +327,18 @@ div {
 
   .video-buttons {
     flex-direction: column; /* جعل الأزرار عمودية */
-    gap: 5px; /* تقليل المسافة بين الأزرار */
+    gap: 10px; /* تقليل المسافة بين الأزرار */
   }
 
   .video-btn,
   .installment-btn {
-    font-size: 12px; /* تصغير خط الأزرار */
+    font-size: 10px; /* تصغير خط الأزرار */
     padding: 8px; /* تقليل الحواف الداخلية */
-    width: 100%; /* جعل الأزرار تمتد للعرض الكامل */
+    width: 100px; /* جعل الأزرار تمتد للعرض الكامل */
   }
 
   .modal-content {
-    width: 95%; /* تصغير عرض النافذة */
+    width: 80%; /* تصغير عرض النافذة */
     padding: 10px; /* تقليل الحواف الداخلية */
     font-size: 12px; /* تصغير الخط داخل النافذة */
   }
