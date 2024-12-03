@@ -73,17 +73,7 @@
     td {
       font-size: 14px;
     }
-#price-slider, #size-slider {
-  margin: 10px 0;
-  width: 200px;
-}
 
-select {
-      padding: 5px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 14px;
-    }
 
     .btn {
       background-color: #28a745;
@@ -257,6 +247,36 @@ select {
   max-width: 100%;
   height: auto;
 }
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  margin: 5px 0;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8px;
+  cursor: pointer;
+  background: #ddd;
+  border-radius: 5px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 16px;
+  width: 16px;
+  background: #007bff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+input[type="range"]:focus {
+  outline: none;
+}
+
+div {
+  text-align: center;
+}
 
   </style>
 </head>
@@ -345,14 +365,22 @@ select {
 
    <h1>الوحدات السكنية المتاحة</h1>
 
- <div style="display: flex; justify-content: center; gap: 20px; margin: 20px 0;">
+<div style="display: flex; justify-content: center; gap: 20px; margin: 20px 0;">
   <div>
     <label>تصفية السعر (ريال):</label>
-    <div id="price-slider"></div>
+    <div>
+      <input type="range" id="price-min" min="0" max="1000000" value="150000" step="10000" oninput="updatePriceLabel()">
+      <input type="range" id="price-max" min="0" max="1000000" value="1000000" step="10000" oninput="updatePriceLabel()">
+      <p>السعر: <span id="price-label">150000 - 1000000</span> ريال</p>
+    </div>
   </div>
   <div>
     <label>تصفية المساحة (متر²):</label>
-    <div id="size-slider"></div>
+    <div>
+      <input type="range" id="size-min" min="0" max="500" value="0" step="10" oninput="updateSizeLabel()">
+      <input type="range" id="size-max" min="0" max="500" value="500" step="10" oninput="updateSizeLabel()">
+      <p>المساحة: <span id="size-label">0 - 500</span> متر²</p>
+    </div>
   </div>
   <div>
     <label>نوع الوحدة:</label>
@@ -363,6 +391,7 @@ select {
     </select>
   </div>
 </div>
+
 
 
   <!-- جدول الوحدات -->
@@ -684,46 +713,37 @@ function openInstallmentModal() {
       setupSliders();
     });
     
-function setupSliders() {
-  const priceSlider = document.getElementById("price-slider");
-  noUiSlider.create(priceSlider, {
-    start: [150000, 1000000],
-    connect: true,
-    range: {
-      min: 0,
-      max: 1000000,
-    },
-    tooltips: true,
-    format: {
-      to: (value) => Math.round(value),
-      from: (value) => Number(value),
-    },
-  });
+function updatePriceLabel() {
+  const min = parseInt(document.getElementById("price-min").value);
+  const max = parseInt(document.getElementById("price-max").value);
 
-  const sizeSlider = document.getElementById("size-slider");
-  noUiSlider.create(sizeSlider, {
-    start: [0, 500],
-    connect: true,
-    range: {
-      min: 0,
-      max: 500,
-    },
-    tooltips: true,
-    format: {
-      to: (value) => Math.round(value),
-      from: (value) => Number(value),
-    },
-  });
+  // ضمان أن الحد الأدنى لا يتجاوز الحد الأقصى
+  if (min > max) {
+    document.getElementById("price-min").value = max;
+  }
 
-  // Event listeners for sliders
-  priceSlider.noUiSlider.on("update", applyFilter);
-  sizeSlider.noUiSlider.on("update", applyFilter);
+  document.getElementById("price-label").textContent = `${min} - ${max}`;
+  applyFilter();
 }
 
+function updateSizeLabel() {
+  const min = parseInt(document.getElementById("size-min").value);
+  const max = parseInt(document.getElementById("size-max").value);
+
+  // ضمان أن الحد الأدنى لا يتجاوز الحد الأقصى
+  if (min > max) {
+    document.getElementById("size-min").value = max;
+  }
+
+  document.getElementById("size-label").textContent = `${min} - ${max}`;
+  applyFilter();
+}
     
 function applyFilter() {
-  const priceRange = priceSlider.noUiSlider.get().map(Number);
-  const sizeRange = sizeSlider.noUiSlider.get().map(Number);
+  const priceMin = parseInt(document.getElementById("price-min").value);
+  const priceMax = parseInt(document.getElementById("price-max").value);
+  const sizeMin = parseInt(document.getElementById("size-min").value);
+  const sizeMax = parseInt(document.getElementById("size-max").value);
   const unitType = document.getElementById("unitTypeFilter").value;
 
   const tableBody = document.querySelector("#units-table tbody");
@@ -734,40 +754,14 @@ function applyFilter() {
     const size = parseFloat(row.cells[5].textContent);
     const type = row.cells[0].textContent;
 
-    const matchesPrice = price >= priceRange[0] && price <= priceRange[1];
-    const matchesSize = size >= sizeRange[0] && size <= sizeRange[1];
+    const matchesPrice = price >= priceMin && price <= priceMax;
+    const matchesSize = size >= sizeMin && size <= sizeMax;
     const matchesType = unitType === "all" || type === unitType;
 
     row.style.display = matchesPrice && matchesSize && matchesType ? "" : "none";
   });
 }
 
-      // تحديث الجدول
-    function updateTable(units) {
-      const tableBody = document.querySelector("#units-table tbody");
-      tableBody.innerHTML = "";
-
-      if (units.length === 0) {
-        tableBody.innerHTML = "<tr><td colspan='4'>لا توجد وحدات مطابقة.</td></tr>";
-        return;
-      }
-
-      units.forEach(unit => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${unit.unitType}</td>
-      <td>${unit.unitNumber}</td>
-      <td>${unit.floorNumber}</td>
-      <td>${unit.marketPrice}</td>
-      <td>${unit.discountedPrice}</td>
-      <td>${unit.size}</td>
-      <td><a href="${unit.unitInMap}" target="_blank">عرض الموقع</a></td>
-      <td><a href="${unit.planLink}" target="_blank">عرض المخطط</a></td>
-      <td><button class="btn" onclick="openModal('${unit.unitNumber}')">حجز</button></td>
-    `;
-    tableBody.appendChild(row);
-  });
-}
 
   </script>
   <footer>
