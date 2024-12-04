@@ -592,6 +592,7 @@ function openResultModal(message) {
         <strong>نسبة الاستقطاع في المرحلة الثانية:</strong> <span style="color: #ff6347;">${message.secondPhaseCommitmentPercentage}%</span><br>
         <hr style="margin: 10px 0;">
       ` : ""}
+      <strong>أعلى مبلغ تمويل:</strong> <span style="color: #007bff;">${message.maxLoanAmount.toFixed(2)} ريال</span><br>
       <strong>مبلغ الوحدة بعد الخصم:</strong> <span style="color: #ffc107;">${message.unitAmount.toFixed(2)} ريال</span><br>
       <strong>تم خصم:</strong> <span style="color: #dc3545;">${message.discount} ريال</span><br>
       <hr style="margin: 10px 0;">
@@ -651,6 +652,7 @@ function calculateInstallment() {
   }
 
   // تطبيق الخصم
+  const maxLoanWithDiscount = unitAmount; // حفظ قيمة أكبر مبلغ تمويل قبل الخصم
   unitAmount -= discount;
 
   // حساب الفائدة الإجمالية
@@ -678,7 +680,7 @@ function calculateInstallment() {
       firstPhaseInstallment: installment,
       firstPhaseDuration: durationMonths,
       firstPhaseCommitmentPercentage: commitmentPercentage,
-      maxLoanAmount: unitAmount + discount, // أكبر مبلغ تمويل قبل الخصم
+      maxLoanAmount: maxLoanWithDiscount, // أكبر مبلغ تمويل قبل الخصم
       unitAmount: unitAmount, // مبلغ الوحدة بعد الخصم
       discount: discount, // قيمة الخصم
       totalInterest: totalInterest,
@@ -718,7 +720,7 @@ function calculateInstallment() {
     secondPhaseInstallment: secondPhaseInstallment,
     secondPhaseDuration: remainingDuration,
     secondPhaseCommitmentPercentage: secondPhaseCommitmentPercentage,
-    maxLoanAmount: unitAmount + discount, // أكبر مبلغ تمويل قبل الخصم
+    maxLoanAmount: maxLoanWithDiscount, // أكبر مبلغ تمويل قبل الخصم
     unitAmount: unitAmount, // مبلغ الوحدة بعد الخصم
     discount: discount, // قيمة الخصم
     totalInterest: totalInterest,
@@ -728,6 +730,7 @@ function calculateInstallment() {
     hideSecondPhase: false, // إظهار المرحلة الثانية
   });
 }
+
 
 
 
