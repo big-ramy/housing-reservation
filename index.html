@@ -775,8 +775,8 @@ async function reserveUnit(unitNumber) {
   try {
     const response = await fetch(apiUrl, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
+      mode:"no-cors"
+        
       },
       body: new URLSearchParams({
         unitNumber: unitNumber,
