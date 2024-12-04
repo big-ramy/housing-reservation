@@ -772,12 +772,13 @@ function openInstallmentModal() {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded"
           },
-          body: new URLSearchParams({
-            unitNumber: selectedUnitNumber,
-            userId: userId,
-            phone: phone
-          })
-        });
+        body: new URLSearchParams({
+          unitNumber: selectedUnitNumber,
+          userId: userId,
+          phone: phone
+        }),
+        mode: "no-cors" // تعطيل CORS
+      });
 
         const result = await response.json();
 
