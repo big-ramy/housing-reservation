@@ -629,7 +629,20 @@ function openResultModal(message) {
 
   // تطبيق الخصم بناءً على الراتب
   const discount = salary < 10000 ? 150000 : 100000;
-  unitAmount -= discount;
+
+  // إذا كانت قيمة الوحدة صفرًا أو فارغة، احسب أكبر مبلغ تمويل ممكن
+  if (unitAmount === 0) {
+    // أقصى نسبة استقطاع مسموح بها 65% من الراتب الشهري
+    const maxCommitment = salary * 0.65;
+    unitAmount = (maxCommitment * durationMonths) - discount;
+
+    if (unitAmount < 0) {
+      alert("لا يمكن تمويل هذه القيمة بناءً على الراتب المدخل.");
+      return;
+    }
+  }
+
+  unitAmount -= discount; // خصم مبلغ الخصم من قيمة الوحدة
 
   // حساب الفائدة الإجمالية
   const totalInterest = unitAmount * (interestRate / 100) * (durationMonths / 12);
@@ -709,6 +722,7 @@ function openResultModal(message) {
     hideSecondPhase: false, // إظهار المرحلة الثانية
   });
 }
+
 
 
 
