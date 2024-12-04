@@ -723,7 +723,7 @@ function openInstallmentModal() {
       document.getElementById("installment-modal").style.display = "none";
     }
   
-const apiUrl = "https://script.google.com/macros/s/AKfycbwu8wicWu2FMaQCIBP7APYOhIpf9yaICmHL1giwDGuq2NWxKFVd0JMaiOgbsgIIRRw/exec";
+const apiUrl = "https://script.google.com/macros/s/AKfycbz-U0r9LbTXbMEwkTPs5Bh3xWORIlMTvMPLP1mB7yiXZ_t7KhReKKhjWHiWhPrxOriW/exec";
 let selectedUnitNumber = null; // لتخزين رقم الوحدة المحددة
 
 // دالة لجلب البيانات عند تحميل الصفحة
@@ -773,8 +773,8 @@ function closeModal() {
 
 // دالة لإجراء الحجز
 async function reserveUnit() {
-  const userId = document.getElementById("userId").value;
-  const phone = document.getElementById("phone").value;
+  const userId = document.getElementById("userId").value.trim();
+  const phone = document.getElementById("phone").value.trim();
 
   if (!userId || !phone) {
     alert("يجب إدخال رقم الهوية ورقم الجوال لإتمام الحجز.");
@@ -785,14 +785,13 @@ async function reserveUnit() {
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
+        "Content-Type": "application/x-www-form-urlencoded",
       },
-      mode: "no-cors",
       body: new URLSearchParams({
         unitNumber: selectedUnitNumber,
         userId: userId,
-        phone: phone
-      })
+        phone: phone,
+      }),
     });
 
     if (!response.ok) {
