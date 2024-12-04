@@ -724,8 +724,9 @@ function openInstallmentModal() {
     }
   
 const apiUrl = "https://script.google.com/macros/s/AKfycbyMLoMG5n_5s3ziwFELgg7l4m6IEszc4Wgy3A_gLIs2qc_aNta-t50bg8dQ7FxPT7Uq/exec";
+let selectedUnitNumber = null; // لتخزين رقم الوحدة المحددة
 
-// دالة لجلب البيانات
+// دالة لجلب البيانات عند تحميل الصفحة
 async function fetchData() {
   try {
     const response = await fetch(apiUrl);
@@ -746,7 +747,7 @@ async function fetchData() {
           <td>${unit.size}</td>
           <td><a href="${unit.unitInMap}" target="_blank">عرض الموقع</a></td>
           <td><a href="${unit.planLink}" target="_blank">عرض المخطط</a></td>
-          <td><button class="btn" onclick="reserveUnit('${unit.unitNumber}')">حجز</button></td>
+          <td><button class="btn" onclick="openModal('${unit.unitNumber}')">حجز</button></td>
         `;
         tableBody.appendChild(row);
       });
@@ -759,10 +760,21 @@ async function fetchData() {
   }
 }
 
-// دالة لحجز الوحدة
-async function reserveUnit(unitNumber) {
-  const userId = prompt("أدخل رقم الهوية:");
-  const phone = prompt("أدخل رقم الجوال:");
+// دالة لفتح النافذة المنبثقة
+function openModal(unitNumber) {
+  selectedUnitNumber = unitNumber;
+  document.getElementById("modal").style.display = "flex";
+}
+
+// دالة لإغلاق النافذة المنبثقة
+function closeModal() {
+  document.getElementById("modal").style.display = "none";
+}
+
+// دالة لإجراء الحجز
+async function reserveUnit() {
+  const userId = document.getElementById("userId").value;
+  const phone = document.getElementById("phone").value;
 
   if (!userId || !phone) {
     alert("يجب إدخال رقم الهوية ورقم الجوال لإتمام الحجز.");
@@ -776,13 +788,12 @@ async function reserveUnit(unitNumber) {
         "Content-Type": "application/x-www-form-urlencoded"
       },
       body: new URLSearchParams({
-        unitNumber: unitNumber,
+        unitNumber: selectedUnitNumber,
         userId: userId,
         phone: phone
       })
     });
 
-    // التحقق من نجاح الاستجابة
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -793,6 +804,7 @@ async function reserveUnit(unitNumber) {
       alert(`خطأ: ${result.error}`);
     } else {
       alert(`نجاح: ${result.success}`);
+      closeModal(); // إغلاق النافذة بعد الحجز
       fetchData(); // تحديث الجدول بعد الحجز
     }
   } catch (error) {
@@ -801,18 +813,12 @@ async function reserveUnit(unitNumber) {
   }
 }
 
-// استدعاء دالة جلب البيانات عند تحميل الصفحة
-document.addEventListener("DOMContentLoaded", fetchData);
+// استدعاء الدالة لجلب البيانات عند تحميل الصفحة
+fetchData();
 
+// إضافة الحدث على زر "احجز الآن"
+document.getElementById("confirmBooking").addEventListener("click", reserveUnit);
 
-function openModal(unitNumber) {
-  selectedUnitNumber = unitNumber;
-  document.getElementById("modal").style.display = "flex";
-}
-
-function closeModal() {
-  document.getElementById("modal").style.display = "none";
-}
     
 function updatePriceLabel() {
   const min = parseInt(document.getElementById("price-min").value);
