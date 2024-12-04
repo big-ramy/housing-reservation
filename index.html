@@ -723,7 +723,7 @@ function openInstallmentModal() {
       document.getElementById("installment-modal").style.display = "none";
     }
   
-const apiUrl = "https://script.google.com/macros/s/AKfycbxN_h1ZL9PDWtQ1nTPAUGlkWLr4uDkorkEmo-ZxjVG4yYgvsR3LfPNX-cB2q7HqKMuR/execc"; // رابط جلب البيانات 
+const apiUrl = "https://script.google.com/macros/s/AKfycbxN_h1ZL9PDWtQ1nTPAUGlkWLr4uDkorkEmo-ZxjVG4yYgvsR3LfPNX-cB2q7HqKMuR/exec"; // رابط جلب البيانات 
 const apiUrl1 = "https://script.google.com/macros/s/AKfycbyK3C91DBeqQIaXuTRwQFtkmx7O0KE4ZTZ_ljmT1wrDN44DkX2X-HfjVV2OF0ScWjo/exec"; // رابط حجز الوحدات
 let selectedUnitNumber = null; // لتخزين رقم الوحدة المحددة
 
@@ -739,7 +739,7 @@ async function fetchData() {
 
       data.forEach(unit => {
         const row = document.createElement("tr");
-        row.innerHTML = 
+        row.innerHTML = `
           <td>${unit.unitType}</td>
           <td>${unit.unitNumber}</td>
           <td>${unit.floorNumber}</td>
@@ -749,7 +749,7 @@ async function fetchData() {
           <td><a href="${unit.unitInMap}" target="_blank">عرض الموقع</a></td>
           <td><a href="${unit.planLink}" target="_blank">عرض المخطط</a></td>
           <td><button class="btn" onclick="openModal('${unit.unitNumber}')">حجز</button></td>
-        ;
+        `;
         tableBody.appendChild(row);
       });
     } else if (data.error) {
@@ -760,7 +760,6 @@ async function fetchData() {
     alert("حدث خطأ أثناء جلب البيانات. يرجى المحاولة لاحقًا.");
   }
 }
-
 
 // دالة لفتح النافذة المنبثقة
 function openModal(unitNumber) {
@@ -784,7 +783,7 @@ async function reserveUnit() {
   }
 
   try {
-    const url = `${apiUrl1}?action=reserve&unitNumber=${selectedUnitNumber}&userId=${userId}&phone=${phone}`;
+    const url = `${apiUrl1}?unitNumber=${selectedUnitNumber}&userId=${userId}&phone=${phone}`;
     const response = await fetch(url, {
       method: "GET",
     });
@@ -808,14 +807,18 @@ async function reserveUnit() {
   }
 }
 
-
-
-
 // استدعاء الدالة لجلب البيانات عند تحميل الصفحة
 fetchData();
 
 // إضافة الحدث على زر "احجز الآن"
-document.getElementById("confirmBooking").addEventListener("click", reserveUnit);
+document.addEventListener("DOMContentLoaded", () => {
+  const confirmBookingButton = document.getElementById("confirmBooking");
+  if (confirmBookingButton) {
+    confirmBookingButton.addEventListener("click", reserveUnit);
+  } else {
+    console.error("زر 'احجز الآن' غير موجود.");
+  }
+});
 
     
 function updatePriceLabel() {
