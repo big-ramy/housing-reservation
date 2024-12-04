@@ -613,8 +613,7 @@ function openResultModal(message) {
     document.getElementById("result-modal").style.display = "none";
   }
     
-  // دالة إغلاق نافذة النتيجة
- function calculateInstallment() {
+function calculateInstallment() {
   const salary = parseFloat(document.getElementById("salary").value) || 0;
   let unitAmount = parseFloat(document.getElementById("loanAmount").value) || 0;
   const durationMonths = parseFloat(document.getElementById("durationMonths").value) || 0;
@@ -627,37 +626,44 @@ function openResultModal(message) {
     { amount: parseFloat(document.getElementById("commitment4").value) || 0, months: parseInt(document.getElementById("commitmentMonths4").value) || 0 },
   ];
 
-  // تطبيق الخصم بناءً على الراتب
+  // الخصم بناءً على الراتب
   const discount = salary < 10000 ? 150000 : 100000;
 
-  // إذا كانت قيمة الوحدة صفرًا أو فارغة، احسب أكبر مبلغ تمويل ممكن
-  if (unitAmount === 0) {
-    // أقصى نسبة استقطاع مسموح بها 65% من الراتب الشهري
-    const maxCommitment = salary * 0.65;
-    unitAmount = (maxCommitment * durationMonths) - discount;
+  // أقصى نسبة استقطاع مسموح بها
+  const maxCommitment = salary * 0.65;
 
-    if (unitAmount < 0) {
-      alert("لا يمكن تمويل هذه القيمة بناءً على الراتب المدخل.");
-      return;
-    }
+  // الالتزامات الشهرية
+  const totalCommitments = commitments.reduce((sum, c) => sum + c.amount, 0);
+
+  // القسط الشهري الممكن بعد الالتزامات
+  const availableCommitment = maxCommitment - totalCommitments;
+
+  if (availableCommitment <= 0) {
+    alert("لا يمكن تمويل العميل نظرًا لوجود التزامات كبيرة.");
+    return;
   }
 
-  unitAmount -= discount; // خصم مبلغ الخصم من قيمة الوحدة
+  // إذا كان مبلغ الوحدة صفرًا أو فارغًا
+  if (unitAmount === 0) {
+    // حساب أكبر مبلغ تمويل ممكن
+    let maxLoanAmount = (availableCommitment * durationMonths) / (1 + (interestRate / 100) * (durationMonths / 12));
+    unitAmount = maxLoanAmount + discount; // إضافة الخصم لمبلغ التمويل
+  }
+
+  // تطبيق الخصم
+  unitAmount -= discount;
 
   // حساب الفائدة الإجمالية
   const totalInterest = unitAmount * (interestRate / 100) * (durationMonths / 12);
 
-  // حساب الفائدة الشهرية
+  // القسط الشهري
   const monthlyInterest = totalInterest / durationMonths;
 
-  // حساب الالتزامات الإجمالية
-  const totalCommitments = commitments.reduce((sum, c) => sum + c.amount, 0);
-
-  let requiredDownPayment = 0; // الدفعة المقدمة إذا لزم الأمر
   let financingMessage = "";
+  let requiredDownPayment = 0;
 
+  // إذا لم تكن هناك التزامات
   if (totalCommitments === 0) {
-    // إذا لم تكن هناك التزامات، احسب القسط على مرحلة واحدة فقط
     const installment = (unitAmount + totalInterest) / durationMonths;
     const commitmentPercentage = ((installment / salary) * 100).toFixed(2);
 
@@ -672,8 +678,9 @@ function openResultModal(message) {
       firstPhaseInstallment: installment,
       firstPhaseDuration: durationMonths,
       firstPhaseCommitmentPercentage: commitmentPercentage,
-      unitAmount: unitAmount,
-      discount: discount,
+      maxLoanAmount: unitAmount + discount, // أكبر مبلغ تمويل قبل الخصم
+      unitAmount: unitAmount, // مبلغ الوحدة بعد الخصم
+      discount: discount, // قيمة الخصم
       totalInterest: totalInterest,
       totalUnitWithInterest: unitAmount + totalInterest,
       financingMessage: financingMessage,
@@ -683,7 +690,7 @@ function openResultModal(message) {
     return;
   }
 
-  // المرحلة الأولى (قسط + الالتزامات الحالية)
+  // إذا كانت هناك التزامات
   const maxCommitmentMonths = Math.max(...commitments.map(c => c.months));
   const firstPhaseDuration = maxCommitmentMonths;
   const firstPhaseInstallment = monthlyInterest + totalCommitments;
@@ -696,7 +703,6 @@ function openResultModal(message) {
     financingMessage = "التمويل ممكن بناءً على المعلومات المدخلة.";
   }
 
-  // المرحلة الثانية
   const remainingDuration = durationMonths - maxCommitmentMonths;
   const remainingLoan = unitAmount;
   const secondPhaseInstallment = (remainingLoan + totalInterest) / remainingDuration;
@@ -705,7 +711,6 @@ function openResultModal(message) {
   // إجمالي مبلغ الوحدة بعد الفوائد
   const totalUnitWithInterest = unitAmount + totalInterest;
 
-  // عرض النتيجة
   openResultModal({
     firstPhaseInstallment: firstPhaseInstallment,
     firstPhaseDuration: firstPhaseDuration,
@@ -713,8 +718,9 @@ function openResultModal(message) {
     secondPhaseInstallment: secondPhaseInstallment,
     secondPhaseDuration: remainingDuration,
     secondPhaseCommitmentPercentage: secondPhaseCommitmentPercentage,
-    unitAmount: unitAmount,
-    discount: discount,
+    maxLoanAmount: unitAmount + discount, // أكبر مبلغ تمويل قبل الخصم
+    unitAmount: unitAmount, // مبلغ الوحدة بعد الخصم
+    discount: discount, // قيمة الخصم
     totalInterest: totalInterest,
     totalUnitWithInterest: totalUnitWithInterest,
     financingMessage: financingMessage,
