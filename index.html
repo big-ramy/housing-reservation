@@ -723,7 +723,7 @@ function openInstallmentModal() {
       document.getElementById("installment-modal").style.display = "none";
     }
   
-const apiUrl = "https://script.google.com/macros/s/AKfycbyMLoMG5n_5s3ziwFELgg7l4m6IEszc4Wgy3A_gLIs2qc_aNta-t50bg8dQ7FxPT7Uq/exec";
+const apiUrl = "https://script.google.com/macros/s/AKfycbwu8wicWu2FMaQCIBP7APYOhIpf9yaICmHL1giwDGuq2NWxKFVd0JMaiOgbsgIIRRw/exec";
 let selectedUnitNumber = null; // لتخزين رقم الوحدة المحددة
 
 // دالة لجلب البيانات عند تحميل الصفحة
@@ -787,6 +787,7 @@ async function reserveUnit() {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
       },
+      mode: "no-cors",
       body: new URLSearchParams({
         unitNumber: selectedUnitNumber,
         userId: userId,
