@@ -723,7 +723,7 @@ function openInstallmentModal() {
       document.getElementById("installment-modal").style.display = "none";
     }
   
-const apiUrl = "https://script.google.com/macros/s/AKfycbz4Ky-VMNGQFbdgqM9yvOmDHsTu-SBYuH9lUo5_74yhX6ofUxjH2S28C3Ipzic678DY/exec";
+const apiUrl = "https://script.google.com/macros/s/AKfycbxyPhv49lj3t9NWFKA8bNAlLGNU2wi6sIaB1X542N9bSWQ74fGY9iwyjDzehx66ZNyO/exec";
 let selectedUnitNumber = null; // لتخزين رقم الوحدة المحددة
 
 // دالة لجلب البيانات عند تحميل الصفحة
@@ -782,30 +782,24 @@ async function reserveUnit() {
   }
 
   try {
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      mode: "cors", // تمكين CORS
-      body: new URLSearchParams({
-        unitNumber: selectedUnitNumber,
-        userId: userId,
-        phone: phone,
-      }),
-    });
+    // إنشاء رابط مع المعلمات المطلوبة
+    const url = `${apiUrl}?action=reserve&unitNumber=${selectedUnitNumber}&userId=${userId}&phone=${phone}`;
+
+    // إرسال الطلب
+    const response = await fetch(url);
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
+    // تحليل النتيجة
     const result = await response.json();
 
     if (result.error) {
       alert(`خطأ: ${result.error}`);
     } else {
       alert(`نجاح: ${result.success}`);
-      closeModal(); // إغلاق النافذة بعد الحجز
+      closeModal(); // إغلاق نافذة الحجز
       fetchData(); // تحديث الجدول بعد الحجز
     }
   } catch (error) {
@@ -813,6 +807,7 @@ async function reserveUnit() {
     alert("حدث خطأ أثناء الحجز. يرجى المحاولة لاحقًا.");
   }
 }
+
 
 
 // استدعاء الدالة لجلب البيانات عند تحميل الصفحة
