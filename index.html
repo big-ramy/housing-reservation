@@ -723,13 +723,12 @@ function openInstallmentModal() {
       document.getElementById("installment-modal").style.display = "none";
     }
   
-const apiUrl = "https://script.google.com/macros/s/AKfycbxyPhv49lj3t9NWFKA8bNAlLGNU2wi6sIaB1X542N9bSWQ74fGY9iwyjDzehx66ZNyO/exec";
+const apiUrl = "https://script.google.com/macros/s/AKfycbwN2EHv-56mot44PPwF9BXdys3J08lIapPH2GtSw9pO1LEF2mbSiVUnEGOUd3JnBMU/exec";
 let selectedUnitNumber = null; // لتخزين رقم الوحدة المحددة
 
 // دالة لجلب البيانات عند تحميل الصفحة
 async function fetchData() {
   try {
-    // إضافة المعلمة action=fetch
     const url = `${apiUrl}?action=fetch`;
     const response = await fetch(url, {
       method: "GET",
@@ -742,7 +741,7 @@ async function fetchData() {
     const data = await response.json();
 
     if (Array.isArray(data)) {
-      const tableBody = document.querySelector("#units-table tbody"); 
+      const tableBody = document.querySelector("#units-table tbody");
       tableBody.innerHTML = ""; // تفريغ الجدول قبل التحديث
 
       data.forEach(unit => {
@@ -795,13 +794,7 @@ async function reserveUnit() {
     const url = `${apiUrl}?action=reserve&unitNumber=${selectedUnitNumber}&userId=${userId}&phone=${phone}`;
     const response = await fetch(url, {
       method: "GET",
-      redirect: "manual", // تجنب إعادة التوجيه التلقائي
     });
-
-    if (response.status === 302) {
-      alert("تم إعادة التوجيه. تحقق من إعدادات النشر في Google Apps Script.");
-      return;
-    }
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
