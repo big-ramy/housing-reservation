@@ -725,14 +725,10 @@ function openInstallmentModal() {
   
 const apiUrl = "https://script.google.com/macros/s/AKfycbyMLoMG5n_5s3ziwFELgg7l4m6IEszc4Wgy3A_gLIs2qc_aNta-t50bg8dQ7FxPT7Uq/exec";
 
+// دالة لجلب البيانات
 async function fetchData() {
   try {
     const response = await fetch(apiUrl);
-
-    if (!response.ok) {
-      throw new Error(`HTTP Error: ${response.status}`);
-    }
-
     const data = await response.json();
 
     if (Array.isArray(data)) {
@@ -750,7 +746,7 @@ async function fetchData() {
           <td>${unit.size}</td>
           <td><a href="${unit.unitInMap}" target="_blank">عرض الموقع</a></td>
           <td><a href="${unit.planLink}" target="_blank">عرض المخطط</a></td>
-          <td><button class="btn" onclick="openModal('${unit.unitNumber}')">حجز</button></td>
+          <td><button class="btn" onclick="reserveUnit('${unit.unitNumber}')">حجز</button></td>
         `;
         tableBody.appendChild(row);
       });
@@ -763,9 +759,10 @@ async function fetchData() {
   }
 }
 
+// دالة لحجز الوحدة
 async function reserveUnit(unitNumber) {
-  const userId = document.getElementById("userId").value;
-  const phone = document.getElementById("phone").value;
+  const userId = prompt("أدخل رقم الهوية:");
+  const phone = prompt("أدخل رقم الجوال:");
 
   if (!userId || !phone) {
     alert("يجب إدخال رقم الهوية ورقم الجوال لإتمام الحجز.");
@@ -775,18 +772,15 @@ async function reserveUnit(unitNumber) {
   try {
     const response = await fetch(apiUrl, {
       method: "POST",
-      mode: "no-cors",
-        
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
       body: new URLSearchParams({
         unitNumber: unitNumber,
         userId: userId,
         phone: phone
       })
     });
-
-    if (!response.ok) {
-      throw new Error(`HTTP Error: ${response.status}`);
-    }
 
     const result = await response.json();
 
@@ -802,6 +796,10 @@ async function reserveUnit(unitNumber) {
   }
 }
 
+// استدعاء دالة جلب البيانات عند تحميل الصفحة
+document.addEventListener("DOMContentLoaded", fetchData);
+
+
 function openModal(unitNumber) {
   selectedUnitNumber = unitNumber;
   document.getElementById("modal").style.display = "flex";
@@ -810,11 +808,6 @@ function openModal(unitNumber) {
 function closeModal() {
   document.getElementById("modal").style.display = "none";
 }
-
-// استدعاء الدالة لجلب البيانات عند تحميل الصفحة
-fetchData();
-
-document.getElementById("confirmBooking").addEventListener("click", reserveUnit);
     
 function updatePriceLabel() {
   const min = parseInt(document.getElementById("price-min").value);
