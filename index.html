@@ -815,7 +815,7 @@ function closeModal() {
 // استدعاء الدالة لجلب البيانات عند تحميل الصفحة
 fetchData();
 
-
+document.getElementById("confirmBooking").addEventListener("click", reserveUnit);
     
 function updatePriceLabel() {
   const min = parseInt(document.getElementById("price-min").value);
