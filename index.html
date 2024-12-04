@@ -775,7 +775,6 @@ async function reserveUnit(unitNumber) {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      mode: "no-cors",
       body: new URLSearchParams({
         unitNumber: unitNumber,
         userId: userId,
@@ -783,12 +782,17 @@ async function reserveUnit(unitNumber) {
       })
     });
 
+    // التحقق من نجاح الاستجابة
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
     const result = await response.json();
 
     if (result.error) {
-      alert(result.error);
+      alert(`خطأ: ${result.error}`);
     } else {
-      alert(result.success);
+      alert(`نجاح: ${result.success}`);
       fetchData(); // تحديث الجدول بعد الحجز
     }
   } catch (error) {
