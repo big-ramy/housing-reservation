@@ -758,9 +758,9 @@ function openInstallmentModal() {
       }
     }
         // دالة لحجز الوحدة
-    async function reserveUnit() {
-      const userId = document.getElementById("userId").value;
-      const phone = document.getElementById("phone").value;
+ async function reserveUnit(unitNumber) {
+      const userId = prompt("أدخل رقم الهوية:");
+      const phone = prompt("أدخل رقم الجوال:");
 
       if (!userId || !phone) {
         alert("يجب إدخال رقم الهوية ورقم الجوال لإتمام الحجز.");
@@ -770,11 +770,9 @@ function openInstallmentModal() {
       try {
         const response = await fetch(apiUrl, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
           },
           body: new URLSearchParams({
-            unitNumber: selectedUnitNumber,
+            unitNumber: unitNumber,
             userId: userId,
             phone: phone
           })
@@ -786,7 +784,6 @@ function openInstallmentModal() {
           alert(result.error);
         } else {
           alert(result.success);
-          closeModal();
           fetchData(); // تحديث الجدول بعد الحجز
         }
       } catch (error) {
@@ -794,6 +791,9 @@ function openInstallmentModal() {
         alert("حدث خطأ أثناء الحجز. يرجى المحاولة لاحقًا.");
       }
     }
+
+    // استدعاء الدالة لجلب البيانات عند تحميل الصفحة
+    fetchData();
 
     // إضافة الحدث على زر "احجز الآن"
     document.getElementById("confirmBooking").addEventListener("click", reserveUnit);
