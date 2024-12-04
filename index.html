@@ -723,7 +723,7 @@ function openInstallmentModal() {
       document.getElementById("installment-modal").style.display = "none";
     }
   
-const apiUrl = "https://script.google.com/macros/s/AKfycbz-U0r9LbTXbMEwkTPs5Bh3xWORIlMTvMPLP1mB7yiXZ_t7KhReKKhjWHiWhPrxOriW/exec";
+const apiUrl = "https://script.google.com/macros/s/AKfycbxFLyblS-hLT6femkzDciNUfaupkYX2nDSMKCUhZ-hvqgQGr-zVF1sJXHcHd4xhg-99/exec";
 let selectedUnitNumber = null; // لتخزين رقم الوحدة المحددة
 
 // دالة لجلب البيانات عند تحميل الصفحة
@@ -787,6 +787,7 @@ async function reserveUnit() {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
+      mode: "cors", // تمكين CORS
       body: new URLSearchParams({
         unitNumber: selectedUnitNumber,
         userId: userId,
@@ -812,6 +813,7 @@ async function reserveUnit() {
     alert("حدث خطأ أثناء الحجز. يرجى المحاولة لاحقًا.");
   }
 }
+
 
 // استدعاء الدالة لجلب البيانات عند تحميل الصفحة
 fetchData();
