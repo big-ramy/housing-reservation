@@ -4,370 +4,718 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>حجز الوحدات السكنية</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      direction: rtl;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-      background-color: #f9f9f9;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 20px;
-      background-color: #fff;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    header img {
-      height: 60px;
-    }
-
-    h1 {
-      margin: 20px 0;
-      color: #333;
-    }
-
-    .info {
-      background-color: #fff;
-      padding: 15px;
-      margin: 20px auto;
-      max-width: 90%;
-      text-align: center;
-      font-size: 16px;
-      color: #555;
-      border-radius: 8px;
-      box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .info strong {
-      color: #333;
-    }
-
-    table {
-      margin: 20px auto;
-      border-collapse: collapse;
-      width: 90%;
-      background: #fff;
-      box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    table, th, td {
-      border: 1px solid #ccc;
-    }
-
-    th, td {
-      padding: 12px;
-      text-align: center;
-    }
-
-    th {
-      background-color: #f4f4f4;
-      font-weight: bold;
-    }
-
-    td {
-      font-size: 16px;
-      font-weight: bold;
-    }
 
 
-    .btn {
-      background-color: #28a745;
-      color: white;
-      padding: 8px 15px;
-      border: none;
-      cursor: pointer;
-      border-radius: 4px;
-      transition: background-color 0.3s ease;
-    }
 
-    .btn:hover {
-      background-color: #218838;
-    }
 
-    .btn:disabled {
-      background-color: #ccc;
-      cursor: not-allowed;
-    }
 
-    footer {
-      margin: 20px 0;
-      color: #777;
-      font-size: 14px;
-    }
 
-  /* نافذة منبثقة عامة */
-  .modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-  }
 
-  .modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 500px;
-    font-size: 16px;
-    line-height: 1.5;
-    text-align: center;
-    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
-    position: relative;
-  }
 
-  .modal-content h2 {
-    margin-bottom: 15px;
-    font-size: 18px;
-  }
 
-  .modal-content p {
-    font-size: 14px;
-    margin-bottom: 20px;
-  }
 
-  .modal-content button {
-    margin-top: 15px;
-    padding: 10px 20px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-  }
 
-  .modal-content button:hover {
-    background-color: #218838;
-  }
 
-  /* زر الإغلاق */
-  .close-modal {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    background: transparent;
-    border: none;
-    font-size: 20px;
-    color: #333;
-    cursor: pointer;
-  }
 
-    /* نافذة النتيجة */
-    .result-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 1100;
-      justify-content: center;
-      align-items: center;
-    }
 
-    .result-modal .result-content {
-      background-color: white;
-      padding: 20px;
-      border-radius: 8px;
-      text-align: center;
-      width: 80%;
-      max-width: 500px;
-      box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
-    }
 
-    .result-modal .result-content button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #28a745;
-      color: white;
-      border: none;
-      cursor: pointer;
-      border-radius: 4px;
-    }
 
-    .result-modal .result-content button:hover {
-      background-color: #218838;
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+body {
+font-family: Arial, sans-serif;
+direction: rtl;
+text-align: center;
+margin: 0;
+padding: 0;
+background-color: #f9f9f9;
+}
+
+header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 10px 20px;
+background-color: #fff;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+header img {
+height: 60px;
+}
+
+h1 {
+margin: 20px 0;
+color: #333;
+}
+
+.info {
+background-color: #fff;
+padding: 15px;
+margin: 20px auto;
+max-width: 90%;
+text-align: center;
+font-size: 16px;
+color: #555;
+border-radius: 8px;
+box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.info strong {
+color: #333;
+}
+
+table {
+margin: 20px auto;
+border-collapse: collapse;
+width: 90%;
+background: #fff;
+box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+table, th, td {
+border: 1px solid #ccc;
+}
+
+th, td {
+padding: 12px;
+text-align: center;
+}
+
+th {
+background-color: #f4f4f4;
+font-weight: bold;
+}
+
+td {
+font-size: 16px;
+font-weight: bold;
+}
+
+
+.btn {
+background-color: #28a745;
+color: white;
+padding: 8px 15px;
+border: none;
+cursor: pointer;
+border-radius: 4px;
+transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+background-color: #218838;
+}
+
+.btn:disabled {
+background-color: #ccc;
+cursor: not-allowed;
+}
+
+footer {
+margin: 20px 0;
+color: #777;
+font-size: 14px;
+}
+
+/* نافذة منبثقة عامة */
+.modal {
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.5);
+z-index: 1000;
+justify-content: center;
+align-items: center;
+}
+
+.modal-content {
+background-color: white;
+padding: 20px;
+border-radius: 8px;
+width: 90%;
+max-width: 500px;
+font-size: 16px;
+line-height: 1.5;
+text-align: center;
+box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
+position: relative;
+}
+
+.modal-content h2 {
+margin-bottom: 15px;
+font-size: 18px;
+}
+
+.modal-content p {
+font-size: 14px;
+margin-bottom: 20px;
+}
+
+.modal-content button {
+margin-top: 15px;
+padding: 10px 20px;
+background-color: #28a745;
+color: white;
+border: none;
+border-radius: 4px;
+font-size: 14px;
+cursor: pointer;
+}
+
+.modal-content button:hover {
+background-color: #218838;
+}
+
+/* زر الإغلاق */
+.close-modal {
+position: absolute;
+top: 10px;
+right: 15px;
+background: transparent;
+border: none;
+font-size: 20px;
+color: #333;
+cursor: pointer;
+}
+
+/* نافذة النتيجة */
+.result-modal {
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.5);
+z-index: 1100;
+justify-content: center;
+align-items: center;
+}
+
+.result-modal .result-content {
+background-color: white;
+padding: 20px;
+border-radius: 8px;
+text-align: center;
+width: 80%;
+max-width: 500px;
+box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.result-modal .result-content button {
+margin-top: 20px;
+padding: 10px 20px;
+background-color: #28a745;
+color: white;
+border: none;
+cursor: pointer;
+border-radius: 4px;
+}
+
+.result-modal .result-content button:hover {
+background-color: #218838;
+}
 
 
 #all_content {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* محاذاة جميع العناصر أفقيًا في المنتصف */
-  justify-content: center; /* محاذاة العناصر عموديًا في المنتصف */
-  gap: 20px; /* مسافة بين العناصر */
-  margin: 0 auto; /* محاذاة الحاوية في منتصف الصفحة */
-  width: 100%; /* عرض الحاوية */
-  max-width: 1200px; /* الحد الأقصى للعرض */
-  padding: 20px; /* حواف داخلية */
-  box-sizing: border-box;
+display: flex;
+flex-direction: column;
+align-items: center; /* محاذاة جميع العناصر أفقيًا في المنتصف */
+justify-content: center; /* محاذاة العناصر عموديًا في المنتصف */
+gap: 20px; /* مسافة بين العناصر */
+margin: 0 auto; /* محاذاة الحاوية في منتصف الصفحة */
+width: 100%; /* عرض الحاوية */
+max-width: 1200px; /* الحد الأقصى للعرض */
+padding: 20px; /* حواف داخلية */
+box-sizing: border-box;
 }
 /* تنسيق صور العمائر */
 #all_content .models {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
+display: flex;
+justify-content: center;
+gap: 10px;
+flex-wrap: wrap;
 }
 
 #all_content .models img {
-  width: 150px;
-  height: auto;
-  border-radius: 5px;
-  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+width: 150px;
+height: auto;
+border-radius: 5px;
+box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
 }
-    .installment-btn {
-      margin: 20px auto;
-      padding: 10px 20px;
-      background-color: #007bff;
-      font-weight: bold;
-      font-size: 16px;
-      color: white;
-      border: none;
-      cursor: pointer;
-      border-radius: 4px;
-      transition: background-color 0.3s ease;
-    }
+.installment-btn {
+margin: 20px auto;
+padding: 10px 20px;
+background-color: #007bff;
+font-weight: bold;
+font-size: 16px;
+color: white;
+border: none;
+cursor: pointer;
+border-radius: 4px;
+transition: background-color 0.3s ease;
+}
 
-    .installment-btn:hover {
-      background-color: #0056b3;
-    }
+.installment-btn:hover {
+background-color: #0056b3;
+}
 
-    .video-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin: 20px 0;
+.video-buttons {
+display: flex;
+justify-content: center;
+gap: 10px;
+margin: 20px 0;
 }
 
 .video-btn {
-  background-color: #007bff;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  cursor: pointer;
-  border-radius: 4px;
-  font-weight: bold;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
+background-color: #007bff;
+color: white;
+padding: 10px 20px;
+border: none;
+cursor: pointer;
+border-radius: 4px;
+font-weight: bold;
+font-size: 16px;
+transition: background-color 0.3s ease;
 }
 
 .video-btn:hover {
-  background-color: #0056b3;
-  
+background-color: #0056b3;
+
 }
 
 .modal video {
-  max-width: 100%;
-  height: auto;
+max-width: 100%;
+height: auto;
 }
 input[type="range"] {
-  -webkit-appearance: none;
-  width: 100%;
-  margin: 5px 0;
+-webkit-appearance: none;
+width: 100%;
+margin: 5px 0;
 }
 
 input[type="range"]::-webkit-slider-runnable-track {
-  width: 100%;
-  height: 8px;
-  cursor: pointer;
-  background: #ddd;
-  border-radius: 5px;
+width: 100%;
+height: 8px;
+cursor: pointer;
+background: #ddd;
+border-radius: 5px;
 }
 
 input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  height: 16px;
-  width: 16px;
-  background: #007bff;
-  border-radius: 50%;
-  cursor: pointer;
+-webkit-appearance: none;
+height: 16px;
+width: 16px;
+background: #007bff;
+border-radius: 50%;
+cursor: pointer;
 }
 
 input[type="range"]:focus {
-  outline: none;
+outline: none;
 }
 
 div {
-  text-align: center;
+text-align: center;
 }
 
 @media (max-width: 768px) {
-  table {
-    width: 100%; /* اجعل عرض الجدول 100% */
-    font-size: 10px; /* تصغير الخط */
-  }
+table {
+width: 100%; /* اجعل عرض الجدول 100% */
+font-size: 10px; /* تصغير الخط */
+}
 
-  th, td {
-    padding: 5px; /* تقليل الحواف الداخلية */
-    font-size: 10px; /* تصغير الخط داخل الخلايا */
-  }
+th, td {
+padding: 5px; /* تقليل الحواف الداخلية */
+font-size: 10px; /* تصغير الخط داخل الخلايا */
+}
 
-  th {
-    font-weight: bold; /* الحفاظ على خط عريض للرؤوس */
-  }
+th {
+font-weight: bold; /* الحفاظ على خط عريض للرؤوس */
+}
 
-  td {
-    font-size: 9px; /* خط أصغر للمحتوى */
-  }
+td {
+font-size: 9px; /* خط أصغر للمحتوى */
+}
 
-  .video-buttons {
-    flex-direction: column; /* جعل الأزرار عمودية */
-    gap: 10px; /* تقليل المسافة بين الأزرار */
-  }
+.video-buttons {
+flex-direction: column; /* جعل الأزرار عمودية */
+gap: 10px; /* تقليل المسافة بين الأزرار */
+}
 
-  .video-btn,
-  .installment-btn {
-    font-size: 10px; /* تصغير خط الأزرار */
-    padding: 8px; /* تقليل الحواف الداخلية */
-    width: 100px; /* جعل الأزرار تمتد للعرض الكامل */
-  }
+.video-btn,
+.installment-btn {
+font-size: 10px; /* تصغير خط الأزرار */
+padding: 8px; /* تقليل الحواف الداخلية */
+width: 100px; /* جعل الأزرار تمتد للعرض الكامل */
+}
 
-  .modal-content {
-    width: 80%; /* تصغير عرض النافذة */
-    padding: 10px; /* تقليل الحواف الداخلية */
-    font-size: 12px; /* تصغير الخط داخل النافذة */
-  }
+.modal-content {
+width: 80%; /* تصغير عرض النافذة */
+padding: 10px; /* تقليل الحواف الداخلية */
+font-size: 12px; /* تصغير الخط داخل النافذة */
+}
 
-  .modal-content input, 
-  .modal-content select, 
-  .modal-content button {
-    font-size: 10px; /* تصغير الخط داخل العناصر */
-    padding: 8px; /* تقليل الحواف الداخلية */
-  }
+.modal-content input,
+.modal-content select,
+.modal-content button {
+font-size: 10px; /* تصغير الخط داخل العناصر */
+padding: 8px; /* تقليل الحواف الداخلية */
+}
 
-  .result-modal .result-content {
-    font-size: 12px; /* تصغير الخط */
-    padding: 10px; /* تقليل المسافة الداخلية */
-  }
+.result-modal .result-content {
+font-size: 12px; /* تصغير الخط */
+padding: 10px; /* تقليل المسافة الداخلية */
+}
 
-  .result-modal .result-content button {
-    font-size: 12px; /* تصغير حجم أزرار النتيجة */
-  }
+.result-modal .result-content button {
+font-size: 12px; /* تصغير حجم أزرار النتيجة */
+}
 }
 
 
-  </style>
+</style>
 
 
 </head>
 <body>
   <!-- الشعار -->
-
   <header>
     <img src="https://media.licdn.com/dms/image/v2/C4D0BAQED93e7d7lWkQ/company-logo_200_200/company-logo_200_200/0/1630490580332?e=2147483647&v=beta&t=hCmFNUBkdnBTYQZvWm7qHm89w_zro06Rr-b2Eup0Ec8" alt="لوجو الشركة">
     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQiNel1DsK7PJmkRJp6xLUH8WAbZ6d0L1PVnw&s" alt="لوجو المشروع">
@@ -380,19 +728,18 @@ div {
     <strong>عزيزي المستفيد:</strong> حجز الوحدة لا يعني أنه حجز نهائي. يتوجب عليك دفع رسوم قدرها <strong>805 ريال</strong>
     على حسابك في تطبيق سكني بعد استلام رسالة الحجز.
   </div>
-<div id="all_content">
+
   <!-- صور نماذج العمائر -->
   <div class="models">
     <img src="https://jed-s3.bluvalt.com/sakani-prod-media-assets/uploads/published_medium/file/61ed161c593f7b5bda72d7a0/high_DM-Render__8_.jpg" alt="نموذج العمارة 1">
     <img src="https://ruh-s3.bluvalt.com/api-nhc.sa/s3fs-public/2023-07/%D8%AF%D8%B1%D8%A9%20%D8%A7%D9%84%D9%85%D8%AF%D9%8A%D9%86%D8%A9%201%2001.jpg" alt="نموذج العمارة 2">
     <img src="https://jed-s3.bluvalt.com/sakani-prod-media-assets/uploads/published_medium/file/61ed161b593f7b5bda72d79c/high_DM-Render__7_.jpg" alt="نموذج العمارة 3">
   </div>
-  </div>
 <!-- أزرار الفيديو -->
 <button class="video-btn" onclick="openVideoModal('ssstwitter.com_1733215444678.mp4')" type="video/mp4">فيديو 1</button>
 <button class="video-btn" onclick="openVideoModal('video22.mp4')" type="video/mp4">فيديو 2</button>
 <button class="video-btn" onclick="openVideoModal('video3.mp4')" type="video/mp4">فيديو 3</button>
-<button class="video-btn" onclick="openPDF('https://manazel.sa/doret-almadinah2/downloads/doret-almadinah2-brochure.pdf')">البروشور</button>
+<<button class="video-btn" onclick="openPDF('https://manazel.sa/doret-almadinah2/downloads/doret-almadinah2-brochure.pdf')">البروشور</button>
 
 
 <!-- نافذة الفيديو المنبثقة -->
@@ -772,13 +1119,12 @@ function openInstallmentModal() {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded"
           },
-        body: new URLSearchParams({
-          unitNumber: selectedUnitNumber,
-          userId: userId,
-          phone: phone
-        }),
-        mode: "no-cors" // تعطيل CORS
-      });
+          body: new URLSearchParams({
+            unitNumber: selectedUnitNumber,
+            userId: userId,
+            phone: phone
+          })
+        });
 
         const result = await response.json();
 
@@ -791,7 +1137,7 @@ function openInstallmentModal() {
         }
       } catch (error) {
         console.error("حدث خطأ أثناء الحجز:", error);
-        alert("تم حجز الوحدة بنجاح الرجاء انتظار رسالة من سكني بتأكيد الحجز يجب تسديد رسوم 805 ريال .");
+        alert("حدث خطأ أثناء الحجز. يرجى المحاولة لاحقًا.");
       }
     }
 
