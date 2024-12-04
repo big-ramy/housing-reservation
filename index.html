@@ -775,6 +775,7 @@ async function reserveUnit(unitNumber) {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
       },
+      mode: "no-cors",
       body: new URLSearchParams({
         unitNumber: unitNumber,
         userId: userId,
