@@ -610,10 +610,6 @@ function openResultModal(message) {
 
 
  // دالة إغلاق نافذة النتيجة
-  function closeResultModal() {
-    document.getElementById("result-modal").style.display = "none";
-  }
-    
 function calculateInstallment() {
   const salary = parseFloat(document.getElementById("salary").value) || 0;
   let unitAmount = parseFloat(document.getElementById("loanAmount").value) || 0;
@@ -710,6 +706,12 @@ function calculateInstallment() {
   const secondPhaseInstallment = (remainingLoan + totalInterest) / remainingDuration;
   const secondPhaseCommitmentPercentage = ((secondPhaseInstallment / salary) * 100).toFixed(2);
 
+  // التحقق من نسبة الاستقطاع في المرحلة الثانية
+  if (secondPhaseCommitmentPercentage > 65) {
+    requiredDownPayment = ((secondPhaseInstallment - salary * 0.65) * remainingDuration);
+    financingMessage = `لا يمكن تمويلك إلا في حال وفرت دفعة قدرها ${requiredDownPayment.toFixed(2)} ريال وذلك لأن نسبة الاستقطاع تتجاوز 65% في المرحلة الثانية.`;
+  }
+
   // إجمالي مبلغ الوحدة بعد الفوائد
   const totalUnitWithInterest = unitAmount + totalInterest;
 
@@ -730,12 +732,6 @@ function calculateInstallment() {
     hideSecondPhase: false, // إظهار المرحلة الثانية
   });
 }
-
-
-
-
-
-
 
 
 function openInstallmentModal() {
