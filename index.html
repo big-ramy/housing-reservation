@@ -661,12 +661,12 @@ function calculateInstallment() {
     }
 
     openResultModal({
-      firstPhaseInstallment,
-      firstPhaseDuration,
-      firstPhaseCommitmentPercentage,
-      secondPhaseInstallment,
-      secondPhaseDuration,
-      secondPhaseCommitmentPercentage,
+      firstPhaseInstallment: firstPhaseInstallment || 0,
+      firstPhaseDuration: firstPhaseDuration || 0,
+      firstPhaseCommitmentPercentage: firstPhaseCommitmentPercentage || "0.00",
+      secondPhaseInstallment: secondPhaseInstallment || 0,
+      secondPhaseDuration: secondPhaseDuration || 0,
+      secondPhaseCommitmentPercentage: secondPhaseCommitmentPercentage || "0.00",
       maxLoanAmount: maxLoanWithDiscount, // أعلى مبلغ تمويل
       unitAmount, // مبلغ الوحدة بعد الخصم
       discount, // قيمة الخصم
