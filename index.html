@@ -640,18 +640,24 @@ function calculateInstallment() {
 
     const remainingDuration = durationMonths - maxCommitmentMonths;
     const remainingLoan = unitAmount;
-    const secondPhaseInstallment = (remainingLoan + totalInterest) / remainingDuration;
-    const secondPhaseCommitmentPercentage = ((secondPhaseInstallment / salary) * 100).toFixed(2);
+    let secondPhaseInstallment = 0;
+    let secondPhaseDuration = remainingDuration;
+    let secondPhaseCommitmentPercentage = 0;
 
-    if (secondPhaseCommitmentPercentage > 65) {
-      if (firstPhaseCommitmentPercentage <= 65) {
-        firstPhaseInstallment = salary * 0.65;
-        firstPhaseCommitmentPercentage = 65;
+    if (remainingDuration > 0) {
+      secondPhaseInstallment = (remainingLoan + totalInterest) / remainingDuration;
+      secondPhaseCommitmentPercentage = ((secondPhaseInstallment / salary) * 100).toFixed(2);
+
+      if (secondPhaseCommitmentPercentage > 65) {
+        if (firstPhaseCommitmentPercentage <= 65) {
+          firstPhaseInstallment = salary * 0.65;
+          firstPhaseCommitmentPercentage = 65;
+        }
+        requiredDownPayment = ((secondPhaseInstallment - salary * 0.65) * remainingDuration);
+        financingMessage = `لا يمكن تمويلك إلا في حال وفرت دفعة قدرها ${requiredDownPayment.toFixed(2)} ريال وذلك لأن نسبة الاستقطاع في المرحلة الثانية تتجاوز 65%.`;
+      } else {
+        financingMessage = "التمويل ممكن بناءً على المعلومات المدخلة.";
       }
-      requiredDownPayment = ((secondPhaseInstallment - salary * 0.65) * remainingDuration);
-      financingMessage = `لا يمكن تمويلك إلا في حال وفرت دفعة قدرها ${requiredDownPayment.toFixed(2)} ريال وذلك لأن نسبة الاستقطاع في المرحلة الثانية تتجاوز 65%.`;
-    } else {
-      financingMessage = "التمويل ممكن بناءً على المعلومات المدخلة.";
     }
 
     openResultModal({
@@ -672,6 +678,7 @@ function calculateInstallment() {
     });
   }
 }
+
 
 
 function openResultModal(message) {
