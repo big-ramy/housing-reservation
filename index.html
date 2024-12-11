@@ -610,10 +610,6 @@ function openResultModal(message) {
 
 
  // دالة إغلاق نافذة النتيجة
-  function closeResultModal() {
-    document.getElementById("result-modal").style.display = "none";
-  }
-    
 function calculateInstallment() {
   const salary = parseFloat(document.getElementById("salary").value) || 0;
   let unitAmount = parseFloat(document.getElementById("loanAmount").value) || 0;
@@ -695,40 +691,35 @@ function calculateInstallment() {
   // إذا كانت هناك التزامات
   const maxCommitmentMonths = Math.max(...commitments.map(c => c.months));
   const firstPhaseDuration = maxCommitmentMonths;
-  let firstPhaseInstallment = monthlyInterest + totalCommitments;
-  let firstPhaseCommitmentPercentage = ((firstPhaseInstallment / salary) * 100).toFixed(2);
+  const firstPhaseInstallment = monthlyInterest + totalCommitments;
+  const firstPhaseCommitmentPercentage = ((firstPhaseInstallment / salary) * 100).toFixed(2);
 
-  // المرحلة الثانية - القسط بعد انتهاء الالتزامات
+  if (firstPhaseCommitmentPercentage > 65) {
+    requiredDownPayment = ((firstPhaseInstallment - salary * 0.65) * firstPhaseDuration);
+    financingMessage = `لا يمكن تمويلك إلا في حال وفرت دفعة قدرها ${requiredDownPayment.toFixed(2)} ريال وذلك لأن التزاماتك تعدت نسبة 65%.`;
+  } else {
+    financingMessage = "التمويل ممكن بناءً على المعلومات المدخلة.";
+  }
+
   const remainingDuration = durationMonths - maxCommitmentMonths;
-  let remainingLoan = unitAmount;
-  let secondPhaseInstallment = (remainingLoan + totalInterest) / remainingDuration;
-  let secondPhaseCommitmentPercentage = ((secondPhaseInstallment / salary) * 100).toFixed(2);
+  const remainingLoan = unitAmount;
+  const secondPhaseInstallment = (remainingLoan + totalInterest) / remainingDuration;
+  const secondPhaseCommitmentPercentage = ((secondPhaseInstallment / salary) * 100).toFixed(2);
 
-  // إذا كان القسط في المرحلة الثانية يتجاوز 65%
+  // التحقق من نسبة الاستقطاع في المرحلة الثانية
   if (secondPhaseCommitmentPercentage > 65) {
-    // رفع القسط في المرحلة الأولى إلى الحد الأقصى (65%)
-    const additionalToFirstPhase = Math.min((salary * 0.65) - firstPhaseInstallment, remainingLoan / firstPhaseDuration);
-    firstPhaseInstallment += additionalToFirstPhase;
-    remainingLoan -= additionalToFirstPhase * firstPhaseDuration;
-
-    // إعادة حساب القسط في المرحلة الثانية
-    secondPhaseInstallment = (remainingLoan + totalInterest) / remainingDuration;
-    secondPhaseCommitmentPercentage = ((secondPhaseInstallment / salary) * 100).toFixed(2);
-
-    if (secondPhaseCommitmentPercentage > 65) {
-      requiredDownPayment = ((secondPhaseInstallment - salary * 0.65) * remainingDuration);
-      financingMessage = `لا يمكن تمويلك إلا في حال وفرت دفعة قدرها ${requiredDownPayment.toFixed(2)} ريال وذلك لأن نسبة الاستقطاع تتجاوز 65%.`;
-    }
+    requiredDownPayment = ((secondPhaseInstallment - salary * 0.65) * remainingDuration);
+    financingMessage = `لا يمكن تمويلك إلا في حال وفرت دفعة قدرها ${requiredDownPayment.toFixed(2)} ريال وذلك لأن نسبة الاستقطاع تتجاوز 65% في المرحلة الثانية.`;
   }
 
   // إجمالي مبلغ الوحدة بعد الفوائد
   const totalUnitWithInterest = unitAmount + totalInterest;
 
   openResultModal({
-    firstPhaseInstallment: firstPhaseInstallment.toFixed(2),
+    firstPhaseInstallment: firstPhaseInstallment,
     firstPhaseDuration: firstPhaseDuration,
     firstPhaseCommitmentPercentage: firstPhaseCommitmentPercentage,
-    secondPhaseInstallment: secondPhaseInstallment.toFixed(2),
+    secondPhaseInstallment: secondPhaseInstallment,
     secondPhaseDuration: remainingDuration,
     secondPhaseCommitmentPercentage: secondPhaseCommitmentPercentage,
     maxLoanAmount: maxLoanWithDiscount, // أكبر مبلغ تمويل قبل الخصم
