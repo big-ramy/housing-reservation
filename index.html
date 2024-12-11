@@ -635,7 +635,7 @@ function calculateInstallment() {
     // إذا كانت هناك التزامات
     const maxCommitmentMonths = Math.max(...commitments.map(c => c.months));
     const firstPhaseDuration = maxCommitmentMonths;
-    let firstPhaseInstallment = monthlyInterest + totalCommitments;
+    let firstPhaseInstallment = Math.min((monthlyInterest + totalCommitments), salary * 0.65);
     let firstPhaseCommitmentPercentage = ((firstPhaseInstallment / salary) * 100).toFixed(2);
 
     const remainingDuration = durationMonths - maxCommitmentMonths;
@@ -645,14 +645,10 @@ function calculateInstallment() {
     let secondPhaseCommitmentPercentage = 0;
 
     if (remainingDuration > 0) {
-      secondPhaseInstallment = (remainingLoan + totalInterest) / remainingDuration;
+      secondPhaseInstallment = Math.min(((remainingLoan + totalInterest) / remainingDuration), salary * 0.65);
       secondPhaseCommitmentPercentage = ((secondPhaseInstallment / salary) * 100).toFixed(2);
 
       if (secondPhaseCommitmentPercentage > 65) {
-        if (firstPhaseCommitmentPercentage <= 65) {
-          firstPhaseInstallment = salary * 0.65;
-          firstPhaseCommitmentPercentage = 65;
-        }
         requiredDownPayment = ((secondPhaseInstallment - salary * 0.65) * remainingDuration);
         financingMessage = `لا يمكن تمويلك إلا في حال وفرت دفعة قدرها ${requiredDownPayment.toFixed(2)} ريال وذلك لأن نسبة الاستقطاع في المرحلة الثانية تتجاوز 65%.`;
       } else {
