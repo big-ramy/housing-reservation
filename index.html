@@ -608,7 +608,7 @@ function calculateInstallment() {
 
   if (totalCommitments === 0) {
     // إذا لم تكن هناك التزامات
-    const installment = (unitAmount + totalInterest) / durationMonths;
+    const installment = Math.min((unitAmount + totalInterest) / durationMonths, maxCommitment);
     const commitmentPercentage = ((installment / salary) * 100).toFixed(2);
 
     if (commitmentPercentage > 65) {
@@ -639,12 +639,13 @@ function calculateInstallment() {
     let firstPhaseCommitmentPercentage = ((firstPhaseInstallment / salary) * 100).toFixed(2);
 
     const remainingDuration = durationMonths - maxCommitmentMonths;
-    const remainingLoan = unitAmount - (firstPhaseInstallment * firstPhaseDuration);
+    const remainingLoan = unitAmount;
     let secondPhaseInstallment = 0;
+    let secondPhaseDuration = remainingDuration;
     let secondPhaseCommitmentPercentage = 0;
 
     if (remainingDuration > 0) {
-      secondPhaseInstallment = Math.min((remainingLoan + (monthlyInterest * remainingDuration)) / remainingDuration, salary * 0.65);
+      secondPhaseInstallment = Math.min(((remainingLoan + totalInterest) / remainingDuration), salary * 0.65);
       secondPhaseCommitmentPercentage = ((secondPhaseInstallment / salary) * 100).toFixed(2);
 
       if (secondPhaseCommitmentPercentage > 65) {
@@ -660,7 +661,7 @@ function calculateInstallment() {
       firstPhaseDuration: firstPhaseDuration || 0,
       firstPhaseCommitmentPercentage: firstPhaseCommitmentPercentage || "0.00",
       secondPhaseInstallment: secondPhaseInstallment || 0,
-      secondPhaseDuration: remainingDuration || 0,
+      secondPhaseDuration: secondPhaseDuration || 0,
       secondPhaseCommitmentPercentage: secondPhaseCommitmentPercentage || "0.00",
       maxLoanAmount: maxLoanWithDiscount, // أعلى مبلغ تمويل
       unitAmount, // مبلغ الوحدة بعد الخصم
