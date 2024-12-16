@@ -675,6 +675,16 @@ function openResultModal(message) {
   const modal = document.getElementById("result-modal");
   const resultMessage = document.getElementById("result-message");
 
+  // التحقق من وجود المرحلة الثانية
+  const secondPhaseContent = !message.hideSecondPhase
+    ? `
+      <strong>القسط في المرحلة الثانية:</strong> <span style="color: #28a745;">${message.secondPhaseInstallment ? message.secondPhaseInstallment.toFixed(2) : 0} ريال</span><br>
+      <strong>مدة المرحلة الثانية:</strong> <span style="color: #28a745;">${message.secondPhaseDuration || 0} شهر</span><br>
+      <strong>نسبة الاستقطاع في المرحلة الثانية:</strong> <span style="color: #ff6347;">${message.secondPhaseCommitmentPercentage || "0.00"}%</span><br>
+      <hr style="margin: 10px 0;">
+    `
+    : ""; // في حالة إخفاء المرحلة الثانية
+
   resultMessage.innerHTML = `
     <div style="text-align: right; font-size: 16px; line-height: 1.8;">
       <strong style="font-size: 18px; color: #333;">النتائج:</strong><br>
@@ -683,10 +693,7 @@ function openResultModal(message) {
       <strong>مدة المرحلة الأولى:</strong> <span style="color: #007bff;">${message.firstPhaseDuration} شهر</span><br>
       <strong>نسبة الاستقطاع في المرحلة الأولى:</strong> <span style="color: #ff6347;">${message.firstPhaseCommitmentPercentage}%</span><br>
       <hr style="margin: 10px 0;">
-      <strong>القسط في المرحلة الثانية:</strong> <span style="color: #28a745;">${message.secondPhaseInstallment.toFixed(2)} ريال</span><br>
-      <strong>مدة المرحلة الثانية:</strong> <span style="color: #28a745;">${message.secondPhaseDuration} شهر</span><br>
-      <strong>نسبة الاستقطاع في المرحلة الثانية:</strong> <span style="color: #ff6347;">${message.secondPhaseCommitmentPercentage}%</span><br>
-      <hr style="margin: 10px 0;">
+      ${secondPhaseContent}
       <strong>أعلى مبلغ تمويل:</strong> <span style="color: #007bff;">${message.maxLoanAmount.toFixed(2)} ريال</span><br>
       <strong>مبلغ الوحدة بعد الخصم:</strong> <span style="color: #ffc107;">${message.unitAmount.toFixed(2)} ريال</span><br>
       <strong>تم خصم:</strong> <span style="color: #dc3545;">${message.discount} ريال</span><br>
@@ -702,6 +709,7 @@ function openResultModal(message) {
 
   modal.style.display = "flex";
 }
+
 
 function closeResultModal() {
   document.getElementById("result-modal").style.display = "none";
