@@ -569,7 +569,6 @@ function closeVideoModal() {
     document.getElementById("installment-modal").style.display = "none";
   }
 
-
 function calculateInstallment() {
   const salary = parseFloat(document.getElementById("salary").value) || 0;
   let unitAmount = parseFloat(document.getElementById("loanAmount").value) || 0;
@@ -586,9 +585,15 @@ function calculateInstallment() {
   const discount = salary < 10000 ? 150000 : 100000;
   const maxCommitment = salary * 0.65;
   const totalCommitments = commitments.reduce((sum, c) => sum + c.amount, 0);
+  const availableCommitment = maxCommitment - totalCommitments;
+
+  if (availableCommitment <= 0) {
+    alert("لا يمكن تمويل العميل نظرًا لوجود التزامات كبيرة.");
+    return;
+  }
 
   if (unitAmount === 0) {
-    let maxLoanAmount = (maxCommitment * durationMonths) / (1 + (interestRate / 100) * (durationMonths / 12));
+    let maxLoanAmount = (availableCommitment * durationMonths) / (1 + (interestRate / 100) * (durationMonths / 12));
     unitAmount = maxLoanAmount + discount;
   }
 
@@ -597,18 +602,19 @@ function calculateInstallment() {
 
   const totalInterest = unitAmount * (interestRate / 100) * (durationMonths / 12);
   const totalUnitWithInterest = unitAmount + totalInterest;
+  const monthlyInterest = totalInterest / durationMonths;
 
   let financingMessage = "";
   let requiredDownPayment = 0;
 
   if (totalCommitments === 0) {
-    // حالة عدم وجود التزامات
+    // في حالة عدم وجود التزامات
     const installment = Math.min((unitAmount + totalInterest) / durationMonths, maxCommitment);
     const commitmentPercentage = ((installment / salary) * 100).toFixed(2);
 
     if (commitmentPercentage > 65) {
-      requiredDownPayment = ((installment - maxCommitment) * durationMonths);
-      financingMessage = `لا يمكن تمويلك إلا في حال وفرت دفعة قدرها ${requiredDownPayment.toFixed(2)} ريال لأن نسبة الاستقطاع تتجاوز 65%.`;
+      requiredDownPayment = ((installment - salary * 0.65) * durationMonths);
+      financingMessage = `لا يمكن تمويلك إلا في حال وفرت دفعة قدرها ${requiredDownPayment.toFixed(2)} ريال وذلك لأن نسبة الاستقطاع تتجاوز 65%.`;
     } else {
       financingMessage = "التمويل ممكن بناءً على المعلومات المدخلة.";
     }
@@ -624,37 +630,38 @@ function calculateInstallment() {
       totalUnitWithInterest,
       financingMessage,
       requiredDownPayment,
-      hideSecondPhase: true, // إخفاء المرحلة الثانية
+      hideSecondPhase: true, // لا توجد مرحلة ثانية
     });
   } else {
-    // حالة وجود التزامات
+    // في حالة وجود التزامات
     const maxCommitmentMonths = Math.max(...commitments.map(c => c.months));
     const firstPhaseDuration = maxCommitmentMonths;
 
-    // رفع القسط في المرحلة الأولى إلى 65% من الراتب
-    let firstPhaseInstallment = Math.min(totalCommitments + (totalInterest / durationMonths), maxCommitment);
+    // رفع القسط في المرحلة الأولى إلى 65% دون تجاوز
+    let firstPhaseInstallment = Math.min(totalCommitments + monthlyInterest, maxCommitment);
     let firstPhaseCommitmentPercentage = ((firstPhaseInstallment / salary) * 100).toFixed(2);
 
-    // حساب القسط للمرحلة الثانية
+    // المرحلة الثانية
     const remainingDuration = durationMonths - firstPhaseDuration;
     const remainingLoan = unitAmount - (firstPhaseInstallment * firstPhaseDuration);
-    const secondPhaseInstallment = (remainingLoan + totalInterest) / remainingDuration;
-    const secondPhaseCommitmentPercentage = ((secondPhaseInstallment / salary) * 100).toFixed(2);
+    let secondPhaseInstallment = remainingLoan / remainingDuration;
+    secondPhaseInstallment = Math.min(secondPhaseInstallment, maxCommitment);
+    let secondPhaseCommitmentPercentage = ((secondPhaseInstallment / salary) * 100).toFixed(2);
 
     if (secondPhaseCommitmentPercentage > 65) {
-      requiredDownPayment = ((secondPhaseInstallment - maxCommitment) * remainingDuration);
-      financingMessage = `لا يمكن تمويلك إلا في حال وفرت دفعة قدرها ${requiredDownPayment.toFixed(2)} ريال لأن نسبة الاستقطاع تتجاوز 65% في المرحلة الثانية.`;
+      requiredDownPayment = ((secondPhaseInstallment - salary * 0.65) * remainingDuration);
+      financingMessage = `لا يمكن تمويلك إلا في حال وفرت دفعة قدرها ${requiredDownPayment.toFixed(2)} ريال وذلك لأن نسبة الاستقطاع في المرحلة الثانية تتجاوز 65%.`;
     } else {
       financingMessage = "التمويل ممكن بناءً على المعلومات المدخلة.";
     }
 
     openResultModal({
-      firstPhaseInstallment,
-      firstPhaseDuration,
-      firstPhaseCommitmentPercentage,
-      secondPhaseInstallment: secondPhaseInstallment.toFixed(2),
+      firstPhaseInstallment: firstPhaseInstallment,
+      firstPhaseDuration: firstPhaseDuration,
+      firstPhaseCommitmentPercentage: firstPhaseCommitmentPercentage,
+      secondPhaseInstallment: secondPhaseInstallment,
       secondPhaseDuration: remainingDuration,
-      secondPhaseCommitmentPercentage,
+      secondPhaseCommitmentPercentage: secondPhaseCommitmentPercentage,
       maxLoanAmount: maxLoanWithDiscount,
       unitAmount,
       discount,
@@ -667,43 +674,32 @@ function calculateInstallment() {
   }
 }
 
-
-
-    
-
 function openResultModal(message) {
   const modal = document.getElementById("result-modal");
   const resultMessage = document.getElementById("result-message");
 
-  // التحقق من وجود المرحلة الثانية
+  // عرض المرحلة الثانية فقط إذا hideSecondPhase = false
   const secondPhaseContent = !message.hideSecondPhase
     ? `
-      <strong>القسط في المرحلة الثانية:</strong> <span style="color: #28a745;">${message.secondPhaseInstallment ? message.secondPhaseInstallment.toFixed(2) : 0} ريال</span><br>
-      <strong>مدة المرحلة الثانية:</strong> <span style="color: #28a745;">${message.secondPhaseDuration || 0} شهر</span><br>
-      <strong>نسبة الاستقطاع في المرحلة الثانية:</strong> <span style="color: #ff6347;">${message.secondPhaseCommitmentPercentage || "0.00"}%</span><br>
-      <hr style="margin: 10px 0;">
+      <strong>القسط في المرحلة الثانية:</strong> <span style="color: #28a745;">${message.secondPhaseInstallment.toFixed(2)} ريال</span><br>
+      <strong>مدة المرحلة الثانية:</strong> <span style="color: #28a745;">${message.secondPhaseDuration} شهر</span><br>
+      <strong>نسبة الاستقطاع في المرحلة الثانية:</strong> <span style="color: #ff6347;">${message.secondPhaseCommitmentPercentage}%</span><br>
     `
-    : ""; // في حالة إخفاء المرحلة الثانية
+    : "";
 
   resultMessage.innerHTML = `
     <div style="text-align: right; font-size: 16px; line-height: 1.8;">
-      <strong style="font-size: 18px; color: #333;">النتائج:</strong><br>
-      <hr style="margin: 10px 0;">
       <strong>القسط + الالتزامات المرحلة الأولى:</strong> <span style="color: #007bff;">${message.firstPhaseInstallment.toFixed(2)} ريال</span><br>
       <strong>مدة المرحلة الأولى:</strong> <span style="color: #007bff;">${message.firstPhaseDuration} شهر</span><br>
       <strong>نسبة الاستقطاع في المرحلة الأولى:</strong> <span style="color: #ff6347;">${message.firstPhaseCommitmentPercentage}%</span><br>
-      <hr style="margin: 10px 0;">
       ${secondPhaseContent}
+      <hr style="margin: 10px 0;">
       <strong>أعلى مبلغ تمويل:</strong> <span style="color: #007bff;">${message.maxLoanAmount.toFixed(2)} ريال</span><br>
       <strong>مبلغ الوحدة بعد الخصم:</strong> <span style="color: #ffc107;">${message.unitAmount.toFixed(2)} ريال</span><br>
       <strong>تم خصم:</strong> <span style="color: #dc3545;">${message.discount} ريال</span><br>
-      <hr style="margin: 10px 0;">
       <strong>إجمالي الفوائد:</strong> <span style="color: #17a2b8;">${message.totalInterest.toFixed(2)} ريال</span><br>
       <strong>إجمالي مبلغ الوحدة بعد إضافة الفوائد:</strong> <span style="color: #6c757d;">${message.totalUnitWithInterest.toFixed(2)} ريال</span><br>
-      <hr style="margin: 10px 0;">
-      <strong style="color: ${message.requiredDownPayment > 0 ? '#dc3545' : '#28a745'};">
-        ${message.financingMessage}
-      </strong>
+      <strong>${message.financingMessage}</strong>
     </div>
   `;
 
