@@ -467,46 +467,90 @@ function calculateInstallment() {
   const maxCommitmentMonths = Math.max(...commitments.map(c => c.months));
   const totalCommitments = commitments.reduce((sum, c) => sum + c.amount, 0);
 
-  const firstPhaseDuration = maxCommitmentMonths;
   const firstPhaseInstallment = monthlyInterest + totalCommitments;
   const firstPhaseCommitmentPercentage = ((firstPhaseInstallment / salary) * 100).toFixed(2);
 
   let requiredDownPayment = 0; // الدفعة المقدمة إذا لزم الأمر
   let financingMessage = "";
 
-  if (firstPhaseCommitmentPercentage > 65) {
-    // إذا تجاوزت نسبة الاستقطاع 65%، نحسب الدفعة المطلوبة
-    requiredDownPayment = ((firstPhaseInstallment - salary * 0.65) * firstPhaseDuration);
-    financingMessage = `لا يمكن تمويلك إلا في حال وفرت دفعة قدرها ${requiredDownPayment.toFixed(2)} ريال وذلك لأن التزاماتك تعدت نسبة 65%.`;
-  } else {
-    financingMessage = "التمويل ممكن بناءً على المعلومات المدخلة.";
+  if (totalCommitments === 0) {
+    // في حال عدم وجود التزامات، تكون النتيجة على مرحلة واحدة فقط
+    const singlePhaseInstallment = (unitAmount + totalInterest) / durationMonths;
+    const singlePhaseCommitmentPercentage = ((singlePhaseInstallment / salary) * 100).toFixed(2);
+
+    if (singlePhaseCommitmentPercentage > 65) {
+      requiredDownPayment = ((singlePhaseInstallment - salary * 0.65) * durationMonths);
+      financingMessage = `لا يمكن تمويلك إلا في حال وفرت دفعة قدرها ${requiredDownPayment.toFixed(2)} ريال وذلك لأن التزاماتك تعدت نسبة 65%.`;
+    } else {
+      financingMessage = "التمويل ممكن بناءً على المعلومات المدخلة.";
+    }
+
+    openResultModal({
+      firstPhaseInstallment: singlePhaseInstallment,
+      firstPhaseDuration: durationMonths,
+      firstPhaseCommitmentPercentage: singlePhaseCommitmentPercentage,
+      secondPhaseInstallment: 0,
+      secondPhaseDuration: 0,
+      secondPhaseCommitmentPercentage: 0,
+      unitAmount: unitAmount,
+      discount: discount,
+      totalInterest: totalInterest,
+      totalUnitWithInterest: unitAmount + totalInterest,
+      financingMessage: financingMessage,
+      requiredDownPayment: requiredDownPayment,
+    });
+
+    return;
   }
 
-  // المرحلة الثانية
-  const remainingDuration = durationMonths - maxCommitmentMonths;
-  const remainingLoan = unitAmount;
-  const secondPhaseInstallment = (remainingLoan + totalInterest) / remainingDuration;
-  const secondPhaseCommitmentPercentage = ((secondPhaseInstallment / salary) * 100).toFixed(2);
+  // إذا كانت هناك التزامات، تخصيص المرحلة الأولى بنسبة استقطاع 65% كحد أقصى
+  const maxAllowedInstallment = salary * 0.65;
+  const firstPhaseDuration = Math.min(maxCommitmentMonths, durationMonths);
+  const remainingLoan = unitAmount + totalInterest - (maxAllowedInstallment * firstPhaseDuration);
 
-  // إجمالي مبلغ الوحدة بعد الفوائد
-  const totalUnitWithInterest = unitAmount + totalInterest;
+  if (remainingLoan > 0) {
+    // حساب المرحلة الثانية
+    const secondPhaseDuration = durationMonths - firstPhaseDuration;
+    const secondPhaseInstallment = remainingLoan / secondPhaseDuration;
+    const secondPhaseCommitmentPercentage = ((secondPhaseInstallment / salary) * 100).toFixed(2);
 
-  // عرض النتيجة
-  openResultModal({
-    firstPhaseInstallment: firstPhaseInstallment,
-    firstPhaseDuration: firstPhaseDuration,
-    firstPhaseCommitmentPercentage: firstPhaseCommitmentPercentage,
-    secondPhaseInstallment: secondPhaseInstallment,
-    secondPhaseDuration: remainingDuration,
-    secondPhaseCommitmentPercentage: secondPhaseCommitmentPercentage,
-    unitAmount: unitAmount,
-    discount: discount,
-    totalInterest: totalInterest,
-    totalUnitWithInterest: totalUnitWithInterest,
-    financingMessage: financingMessage,
-    requiredDownPayment: requiredDownPayment,
-  });
+    financingMessage = "التمويل ممكن بناءً على المعلومات المدخلة.";
+
+    openResultModal({
+      firstPhaseInstallment: maxAllowedInstallment,
+      firstPhaseDuration: firstPhaseDuration,
+      firstPhaseCommitmentPercentage: 65,
+      secondPhaseInstallment: secondPhaseInstallment,
+      secondPhaseDuration: secondPhaseDuration,
+      secondPhaseCommitmentPercentage: secondPhaseCommitmentPercentage,
+      unitAmount: unitAmount,
+      discount: discount,
+      totalInterest: totalInterest,
+      totalUnitWithInterest: unitAmount + totalInterest,
+      financingMessage: financingMessage,
+      requiredDownPayment: requiredDownPayment,
+    });
+  } else {
+    // إذا لم تكن هناك حاجة لمرحلة ثانية
+    financingMessage = "التمويل ممكن بناءً على المعلومات المدخلة.";
+
+    openResultModal({
+      firstPhaseInstallment: maxAllowedInstallment,
+      firstPhaseDuration: firstPhaseDuration,
+      firstPhaseCommitmentPercentage: 65,
+      secondPhaseInstallment: 0,
+      secondPhaseDuration: 0,
+      secondPhaseCommitmentPercentage: 0,
+      unitAmount: unitAmount,
+      discount: discount,
+      totalInterest: totalInterest,
+      totalUnitWithInterest: unitAmount + totalInterest,
+      financingMessage: financingMessage,
+      requiredDownPayment: requiredDownPayment,
+    });
+  }
 }
+
 
 
 
