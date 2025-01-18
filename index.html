@@ -482,7 +482,7 @@
       </div>
       <div class="col-md-3">
         <label for="minPrice">السعر (ريال)</label>
-        <input type="range" id="minPrice" min="50000" max="500000" value="50000" class="form-range">
+        <input type="range" id="minPrice" min="500000" max="1000000" value="500000" class="form-range">
         <div class="slider-labels">
           <span>50,000</span>
           <span>500,000</span>
@@ -490,7 +490,7 @@
       </div>
       <div class="col-md-3">
         <label for="maxArea">المساحة (م²)</label>
-        <input type="range" id="maxArea" min="50" max="500" value="500" class="form-range">
+        <input type="range" id="maxArea" min="125" max="500" value="500" class="form-range">
         <div class="slider-labels">
           <span>50</span>
           <span>500</span>
@@ -504,9 +504,9 @@
     <table id="units-table" class="table table-striped table-bordered">
       <thead>
         <tr>
+          <th>نوع الوحدة</th>
           <th>رقم الوحدة</th>
           <th>رقم الدور</th>
-          <th>القيمة السوقية</th>
           <th>القيمة قبل الدعم</th>
           <th>المساحة</th>
           <th>رابط المخطط</th>
@@ -754,9 +754,9 @@ function updateTable(filteredData) {
   filteredData.forEach(unit => {
     const row = `
       <tr>
+        <td>${unit.unitType}</td>
         <td>${unit.unitNumber}</td>
         <td>${unit.floorNumber}</td>
-        <td>${unit.unitType}</td>
         <td>${unit.rooms}</td>
         <td>${unit.size}</td>
         <td>${unit.marketPrice}</td>
