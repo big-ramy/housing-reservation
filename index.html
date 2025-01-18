@@ -484,16 +484,16 @@
         <label for="minPrice">السعر (ريال)</label>
         <input type="range" id="minPrice" min="500000" max="1000000" value="500000" class="form-range">
         <div class="slider-labels">
-          <span>50,000</span>
-          <span>500,000</span>
+          <span id="minPriceValue">500,000</span>
+          <span>1000,000</span>
         </div>
       </div>
       <div class="col-md-3">
         <label for="maxArea">المساحة (م²)</label>
         <input type="range" id="maxArea" min="125" max="500" value="500" class="form-range">
         <div class="slider-labels">
-          <span>50</span>
-          <span>500</span>
+          <span>125</span>
+          <span id="maxAreaValue">500</span>
         </div>
       </div>
     </div>
@@ -809,6 +809,18 @@ function updateTable(filteredData) {
 
     document.getElementById("confirmBooking").addEventListener("click", reserveUnit);
 
+document.getElementById('minPrice').addEventListener('input', function() {
+  const minPriceValue = document.getElementById('minPriceValue');
+  minPriceValue.textContent = parseInt(this.value).toLocaleString(); // تحديث قيمة السعر
+});
+
+document.getElementById('maxArea').addEventListener('input', function() {
+  const maxAreaValue = document.getElementById('maxAreaValue');
+  maxAreaValue.textContent = parseInt(this.value).toLocaleString(); // تحديث قيمة المساحة
+});
+
+
+    
     function openModal(unitNumber) {
       selectedUnitNumber = unitNumber;
       document.getElementById("modal").style.display = "flex";
