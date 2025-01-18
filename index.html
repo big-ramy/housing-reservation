@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="ar">
 <head>
@@ -19,6 +21,7 @@
     header img {
       height: 60px;
     }
+    /* يمكن إضافة أنماط إضافية مخصصة إذا لزم الأمر */
   </style>
 </head>
 <body>
@@ -69,7 +72,7 @@
   </div>
 
   <!-- نافذة الفيديو المنبثقة -->
-  <div id="video-modal" class="modal d-flex">
+  <div id="video-modal" class="modal d-flex" style="display:none;">
     <div class="modal-content">
       <button class="btn btn-danger mb-2" onclick="closeVideoModal()">×</button>
       <video id="video-player" width="100%" controls>
@@ -80,7 +83,7 @@
   </div>
 
   <!-- نافذة حساب القسط -->
-  <div id="installment-modal" class="modal d-flex">
+  <div id="installment-modal" class="modal d-flex" style="display:none;">
     <div class="modal-content">
       <button class="btn btn-danger mb-2" onclick="closeInstallmentModal()">×</button>
       <h2>حساب القسط الشهري</h2>
@@ -103,7 +106,7 @@
   </div>
 
   <!-- نافذة النتيجة -->
-  <div id="result-modal" class="result-modal d-flex">
+  <div id="result-modal" class="result-modal d-flex" style="display:none;">
     <div class="result-content">
       <h3>نتيجة الحساب</h3>
       <p id="result-message">...</p>
@@ -111,6 +114,10 @@
     </div>
   </div>
 
+  <footer class="text-muted py-3">
+    © 2024 - نظام حجز الوحدات السكنية
+  </footer>
+  
   <!-- ربط مكتبة jQuery، Popper.js، وBootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
@@ -157,10 +164,7 @@
     function openResultModal(message) {
       const modal = document.getElementById("result-modal");
       const resultMessage = document.getElementById("result-message");
-      resultMessage.innerHTML = `
-        <!-- تنسيق النتيجة كما هو الحال في الكود السابق -->
-        ${message}
-      `;
+      resultMessage.innerHTML = message; // سيتم تعيين تنسيق النتيجة في الدالة calculateInstallment
       modal.style.display = "flex";
     }
 
@@ -378,9 +382,9 @@ function openInstallmentModal() {
     document.getElementById("confirmBooking").addEventListener("click", reserveUnit);
 
     fetchData();
+
+
   </script>
-  <footer>
-    © 2024 - نظام حجز الوحدات السكنية
-  </footer>
 </body>
 </html>
+
