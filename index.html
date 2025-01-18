@@ -712,36 +712,63 @@
     let selectedUnitNumber = null;
 
     async function fetchData() {
-      try {
-        const response = await fetch(apiUrl);
-        const data = await response.json();
+  try {
+    const response = await fetch(apiUrl);
+    const data = await response.json();
 
-        if (Array.isArray(data)) {
-          const tableBody = document.querySelector("#units-table tbody");
-          tableBody.innerHTML = "";
+    if (Array.isArray(data)) {
+      const typeFilter = $('#typeFilter').val();
+      const roomsFilter = parseInt($('#roomsFilter').val());
+      const minPrice = parseInt($('#minPrice').val());
+      const maxArea = parseInt($('#maxArea').val());
 
-          data.forEach(unit => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-              <td>${unit.unitNumber}</td>
-              <td>${unit.floorNumber}</td>
-              <td>${unit.marketPrice}</td>
-              <td>${unit.discountedPrice}</td>
-              <td>${unit.size}</td>
-              <td><a href="${unit.planLink}" target="_blank">عرض المخطط</a></td>
-              <td><a href="${unit.unitInMap}" target="_blank">الموقع على الخارطة</a></td>
-              <td><button class="btn btn-success" onclick="openModal('${unit.unitNumber}')">حجز</button></td>
-            `;
-            tableBody.appendChild(row);
-          });
-        } else if (data.error) {
-          alert(data.error);
-        }
-      } catch (error) {
-        console.error("حدث خطأ أثناء جلب البيانات:", error);
-        alert("حدث خطأ أثناء جلب البيانات. يرجى المحاولة لاحقًا.");
-      }
+      const filteredData = data.filter(unit => {
+        const unitType = unit.unitType || '';
+        const rooms = parseInt(unit.rooms) || 0;
+        const price = parseInt(unit.marketPrice) || 0;
+        const area = parseInt(unit.size) || 0;
+
+        // تطبيق شروط الفلترة
+        if (typeFilter && unitType !== typeFilter) return false;
+        if (roomsFilter && rooms !== roomsFilter) return false;
+        if (price < minPrice) return false;
+        if (area > maxArea) return false;
+
+        return true;
+      });
+
+      updateTable(filteredData);
+    } else if (data.error) {
+      alert(data.error);
     }
+  } catch (error) {
+    console.error("حدث خطأ أثناء جلب البيانات:", error);
+    alert("حدث خطأ أثناء جلب البيانات. يرجى المحاولة لاحقًا.");
+  }
+}
+
+function updateTable(filteredData) {
+  const tableBody = document.querySelector("#units-table tbody");
+  tableBody.innerHTML = "";
+
+  filteredData.forEach(unit => {
+    const row = `
+      <tr>
+        <td>${unit.unitNumber}</td>
+        <td>${unit.floorNumber}</td>
+        <td>${unit.unitType}</td>
+        <td>${unit.rooms}</td>
+        <td>${unit.size}</td>
+        <td>${unit.marketPrice}</td>
+        <td><a href="${unit.planLink}" target="_blank">عرض المخطط</a></td>
+        <td><a href="${unit.unitInMap}" target="_blank">الموقع على الخارطة</a></td>
+        <td><button class="btn btn-success" onclick="openModal('${unit.unitNumber}')">حجز</button></td>
+      </tr>
+    `;
+    tableBody.innerHTML += row;
+  });
+}
+
 
     async function reserveUnit() {
       const userId = document.getElementById("userId").value;
