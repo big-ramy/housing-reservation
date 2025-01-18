@@ -1,5 +1,4 @@
-
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar">
 <head>
   <meta charset="UTF-8" />
@@ -18,7 +17,7 @@
     type="text/css"
     href="https://cdn.datatables.net/1.13.5/css/dataTables.bootstrap5.min.css"
   />
-<style>
+  <style>
     body {
       font-family: Arial, sans-serif;
       direction: rtl;
@@ -27,7 +26,6 @@
       padding: 0;
       background-color: #f9f9f9;
     }
-
     header {
       display: flex;
       justify-content: space-between;
@@ -36,16 +34,13 @@
       background-color: #fff;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
-
     header img {
       height: 60px;
     }
-
     h1 {
       margin: 20px 0;
       color: #333;
     }
-
     .info {
       background-color: #fff;
       padding: 15px;
@@ -57,11 +52,9 @@
       border-radius: 8px;
       box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
     }
-
     .info strong {
       color: #333;
     }
-
     table {
       margin: 20px auto;
       border-collapse: collapse;
@@ -69,25 +62,20 @@
       background: #fff;
       box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
     }
-
     table, th, td {
       border: 1px solid #ccc;
     }
-
     th, td {
       padding: 12px;
       text-align: center;
     }
-
     th {
       background-color: #f4f4f4;
       font-weight: bold;
     }
-
     td {
       font-size: 14px;
     }
-
     .btn {
       background-color: #28a745;
       color: white;
@@ -97,22 +85,18 @@
       border-radius: 4px;
       transition: background-color 0.3s ease;
     }
-
     .btn:hover {
       background-color: #218838;
     }
-
     .btn:disabled {
       background-color: #ccc;
       cursor: not-allowed;
     }
-
     footer {
       margin: 20px 0;
       color: #777;
       font-size: 14px;
     }
-
     .modal {
       display: none;
       position: fixed;
@@ -125,7 +109,6 @@
       justify-content: center;
       align-items: center;
     }
-
     .modal-content {
       background-color: white;
       padding: 20px;
@@ -137,21 +120,18 @@
       text-align: center;
       box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
     }
-
     .modal-content form {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       gap: 10px;
     }
-
     .modal-content input, .modal-content select {
       flex: 1 1 calc(48% - 10px);
       padding: 10px;
       border: 1px solid #ccc;
       border-radius: 4px;
     }
-
     .modal-content button {
       flex: 1 1 100%;
       margin-top: 10px;
@@ -163,11 +143,17 @@
       border-radius: 4px;
       transition: background-color 0.3s ease;
     }
-
     .modal-content button:hover {
       background-color: #0056b3;
     }
-
+    /* تنسيق قسم الفلترة */
+    .filter-section {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
     /* نافذة النتيجة */
     .result-modal {
       display: none;
@@ -181,7 +167,6 @@
       justify-content: center;
       align-items: center;
     }
-
     .result-modal .result-content {
       background-color: white;
       padding: 20px;
@@ -191,7 +176,6 @@
       max-width: 500px;
       box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
     }
-
     .result-modal .result-content button {
       margin-top: 20px;
       padding: 10px 20px;
@@ -201,19 +185,15 @@
       cursor: pointer;
       border-radius: 4px;
     }
-
     .result-modal .result-content button:hover {
       background-color: #218838;
     }
-
-
     .models {
       display: flex;
       justify-content: center;
       gap: 20px;
       margin: 20px auto;
     }
-
     .models img {
       width: 200px;
       height: auto;
@@ -230,37 +210,31 @@
       border-radius: 4px;
       transition: background-color 0.3s ease;
     }
-
     .installment-btn:hover {
       background-color: #0056b3;
     }
-
     .video-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin: 20px 0;
-}
-
-.video-btn {
-  background-color: #007bff;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  cursor: pointer;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
-}
-
-.video-btn:hover {
-  background-color: #0056b3;
-}
-
-.modal video {
-  max-width: 100%;
-  height: auto;
-}
-
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .video-btn {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+    }
+    .video-btn:hover {
+      background-color: #0056b3;
+    }
+    .modal video {
+      max-width: 100%;
+      height: auto;
+    }
   </style>
 </head>
 <body>
@@ -307,7 +281,7 @@
   </div>
 
   <!-- قسم الفلترة -->
-  <div class="container mb-3">
+  <div class="container filter-section mb-3">
     <div class="row g-2">
       <div class="col-md-2">
         <input type="text" id="typeFilter" class="form-control" placeholder="نوع الوحدة" />
@@ -435,10 +409,10 @@
         var minRooms = parseFloat($('#minRooms').val(), 10);
         var maxRooms = parseFloat($('#maxRooms').val(), 10);
 
-        var typeData = (data[8] || "").toLowerCase(); // نوع الوحدة
-        var price = parseFloat(data[5]) || 0;          // السعر
-        var area = parseFloat(data[3]) || 0;           // مساحة الشقة
-        var rooms = parseFloat(data[4]) || 0;          // عدد الغرف
+        var typeData = (data[8] || "").toLowerCase(); 
+        var price = parseFloat(data[5]) || 0;          
+        var area = parseFloat(data[3]) || 0;           
+        var rooms = parseFloat(data[4]) || 0;          
 
         if (typeFilter && typeData.indexOf(typeFilter) === -1) return false;
         if (!isNaN(minPrice) && price < minPrice) return false;
@@ -451,7 +425,8 @@
       }
     );
 
-    // باقي الدوال كما هي (openVideoModal, closeVideoModal, openInstallmentModal, closeInstallmentModal, openResultModal, closeResultModal, calculateInstallment, fetchData, reserveUnit, openModal, closeModal)
+    // الدوال: openVideoModal, closeVideoModal, openInstallmentModal, closeInstallmentModal,
+    // openResultModal, closeResultModal, calculateInstallment, fetchData, reserveUnit, openModal, closeModal.
 
     function openVideoModal(videoFileName) {
       const videoPlayer = document.getElementById("video-player");
@@ -502,7 +477,7 @@
     function closeResultModal() {
       document.getElementById("result-modal").style.display = "none";
     }
-    function calculateInstallment() { /* محتوى الدالة كما هو */ }
+    function calculateInstallment() { /* محتوى الدالة كما هو في الكود */ }
     const apiUrl = "https://script.google.com/macros/s/AKfycbxKxVCedeb8P_HHvxdrlCroIyxzcH3n9Mmzcb15mi2l7mrQ_uKWEfjfxNHnHI4XYCKK/exec";
     let selectedUnitNumber = null;
     async function fetchData() {
