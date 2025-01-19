@@ -533,200 +533,177 @@
     }
 
     // ========== الدالة الرئيسية لحساب الأقساط ==========
-    function calculateInstallment() {
-      const salary = parseFloat(document.getElementById("salary").value) || 0;
-      let unitAmount = parseFloat(document.getElementById("loanAmount").value) || 0;
-      const durationMonths = parseFloat(document.getElementById("durationMonths").value) || 0;
-      const interestRate = parseFloat(document.getElementById("interestRate").value) || 0;
+function calculateInstallment() {
+  const salary = parseFloat(document.getElementById("salary").value) || 0;
+  let unitAmount = parseFloat(document.getElementById("loanAmount").value) || 0;
+  const durationMonths = parseFloat(document.getElementById("durationMonths").value) || 0;
+  const interestRate = parseFloat(document.getElementById("interestRate").value) || 0;
 
-      // الالتزامات
-      const commitments = [
-        { amount: parseFloat(document.getElementById("commitment1").value) || 0, months: parseInt(document.getElementById("commitmentMonths1").value) || 0 },
-        { amount: parseFloat(document.getElementById("commitment2").value) || 0, months: parseInt(document.getElementById("commitmentMonths2").value) || 0 },
-        { amount: parseFloat(document.getElementById("commitment3").value) || 0, months: parseInt(document.getElementById("commitmentMonths3").value) || 0 },
-        { amount: parseFloat(document.getElementById("commitment4").value) || 0, months: parseInt(document.getElementById("commitmentMonths4").value) || 0 },
-      ];
+  // الالتزامات
+  const commitments = [
+    { amount: parseFloat(document.getElementById("commitment1").value) || 0, months: parseInt(document.getElementById("commitmentMonths1").value) || 0 },
+    { amount: parseFloat(document.getElementById("commitment2").value) || 0, months: parseInt(document.getElementById("commitmentMonths2").value) || 0 },
+    { amount: parseFloat(document.getElementById("commitment3").value) || 0, months: parseInt(document.getElementById("commitmentMonths3").value) || 0 },
+    { amount: parseFloat(document.getElementById("commitment4").value) || 0, months: parseInt(document.getElementById("commitmentMonths4").value) || 0 },
+  ];
 
-      // تحديد الخصم (الدعم)
-      const discount = salary < 10000 ? 150000 : 100000;
-      unitAmount -= discount;
+  // دعم الوزارة
+  const discount = salary < 10000 ? 150000 : 100000;
+  unitAmount -= discount;
 
-      // حساب الفائدة الكلية والتأكد من وجود مدة
-      if (durationMonths <= 0) {
-        openResultModal("الرجاء إدخال مدة تمويل صحيحة (أشهر).");
-        return;
-      }
+  if (durationMonths <= 0) {
+    openResultModal("الرجاء إدخال مدة تمويل صحيحة (أشهر).");
+    return;
+  }
 
-      const totalInterest = unitAmount * (interestRate / 100) * (durationMonths / 12);
-      const monthlyInterest = totalInterest / durationMonths;  // قيمة الفائدة الشهرية
+  // الفائدة الإجمالية والفائدة الشهرية
+  const totalInterest = unitAmount * (interestRate / 100) * (durationMonths / 12);
+  const monthlyInterest = totalInterest / durationMonths;
 
-      // نبدأ بحساب ما إذا كانت هناك التزامات في مرحلة أولى
-      const maxCommitmentMonths = Math.max(...commitments.map(c => c.months));
-      const totalCommitments = commitments.reduce((sum, c) => sum + c.amount, 0);
+  // السقف الأعلى للاستقطاع
+  const maxAllowed = salary * 0.65;
+  let requiredDownPayment = 0;
+  let financingMessage = "";
+  let resultHtml = "";
 
-      const maxAllowed = salary * 0.65;
-      let requiredDownPayment = 0;
-      let financingMessage = "";
-      let resultHtml = "";
+  // جمع الالتزامات
+  const totalCommitments = commitments.reduce((sum, c) => sum + c.amount, 0);
+  const maxCommitmentMonths = Math.max(...commitments.map(c => c.months));
 
-      // لابد ألا يقل القسط في أي مرحلة عن قيمة الفائدة الشهرية
-      // حتى لا يتراكم الدين
+  // ========== الحالة الأولى: لا توجد التزامات ==========
+  if (totalCommitments === 0) {
+    // قسط موحد لكامل المدة
+    const singlePhaseInstallment = (unitAmount + totalInterest) / durationMonths;
 
-      // === الحالة 1: لو ما عنده التزامات (totalCommitments == 0) ===
-      if (totalCommitments === 0) {
-        // قسط وحيد على مدى كل الأشهر
-        const singlePhaseInstallment = (unitAmount + totalInterest) / durationMonths;
+    // يجب ألا يقل عن الفائدة الشهرية
+    if (singlePhaseInstallment < monthlyInterest) {
+      openResultModal("القسط أقل من قيمة الفائدة الشهرية. يجب تقليل مدة التمويل أو زيادة الدفعة المقدمة.");
+      return;
+    }
 
-        // يجب ألا يقل عن monthlyInterest:
-        if (singlePhaseInstallment < monthlyInterest) {
-          // يعني يقصر عن دفع الفائدة
-          openResultModal("القسط أقل من قيمة الفائدة الشهرية. يجب تقصير مدة التمويل أو دفع مبلغ مقدم أكبر.");
-          return;
-        }
-
-        // تحقق من النسبة
-        const singlePhaseCommitmentPercentage = (singlePhaseInstallment / salary) * 100;
-
-        if (singlePhaseCommitmentPercentage > 65) {
-          // نحسب الدفعة المقدمة المطلوبة لخفض الأقساط للحد المطلوب
-          // المعادلة: نريد installment الجديد = maxAllowed
-          // (unitAmount + totalInterest - downPayment) / durationMonths = maxAllowed
-          // downPayment = (unitAmount + totalInterest) - (maxAllowed * durationMonths)
-          requiredDownPayment = (unitAmount + totalInterest) - (maxAllowed * durationMonths);
-          if (requiredDownPayment < 0) requiredDownPayment = 0; // تفادي السالب
-
-          if (requiredDownPayment > 0) {
-            financingMessage = `لا يمكن تمويلك إلا إذا قمت بدفع مقدم إضافي وقدره ${requiredDownPayment.toFixed(2)} ريال (لضمان ألا تتجاوز نسبة الاستقطاع 65%).`;
-          } else {
-            financingMessage = "التمويل ممكن بناءً على المعلومات المدخلة.";
-          }
-        } else {
-          financingMessage = "التمويل ممكن بناءً على المعلومات المدخلة.";
-        }
-
-        // صياغة النتيجة
-        resultHtml = `
-          <div style="text-align:right; line-height:1.8;">
-            <strong style="font-size:16px;">المرحلة الوحيدة:</strong><br>
-            <b>القسط الشهري:</b> ${singlePhaseInstallment.toFixed(2)} ريال<br>
-            <b>نسبة الاستقطاع:</b> ${singlePhaseCommitmentPercentage.toFixed(2)}%<br>
-            <b>مبلغ الوحدة بعد الخصم:</b> ${unitAmount.toFixed(2)} ريال<br>
-            <b>إجمالي الفوائد:</b> ${totalInterest.toFixed(2)} ريال<br>
-            <b>مبلغ الوحدة بعد إضافة الفوائد:</b> ${(unitAmount + totalInterest).toFixed(2)} ريال<br>
-            <hr>
-            <b style="color:${requiredDownPayment>0?'red':'green'};">${financingMessage}</b>
-          </div>
-        `;
-        openResultModal(resultHtml);
-        return;
-      }
-
-      // === الحالة 2: وجود التزامات (مرحلة أولى + مرحلة ثانية) ===
-      // المرحلة الأولى: يكون القسط مع الالتزامات لا يتجاوز maxAllowed
-      // ويجب ألا يقل عن monthlyInterest (لا يقل عن الفائدة الشهرية)
-      // إن لم يتحقق الشرط -> نطلب دفعة مقدم حتى يقل المبلغ
-      const firstPhaseDuration = Math.min(maxCommitmentMonths, durationMonths);
-      // نفترض القسط في المرحلة الأولى = أكبر من (totalCommitments + monthlyInterest)
-      // لكن أيضًا لا يتعدى 0.65 * الراتب
-      let firstPhaseInstallment = totalCommitments + monthlyInterest;
-
-      if (firstPhaseInstallment > maxAllowed) {
-        // إذن تتجاوز 65% من الراتب في المرحلة الأولى
-        // نحسب الدفعة المقدمة لخفض مبلغ التمويل
-        // إذا خفضنا مبلغ التمويل X => تقل الفائدة
-        // سنبسط الحساب: نقول المستخدم يجب أن يدفع مقدم كي لا يتعدى
-        // (totalCommitments + monthlyInterest) <= maxAllowed
-        // المقدم يزيد => يقل unitAmount => يقل totalInterest => يقل monthlyInterest
-        // هذا حساب معقد ديناميكي؛ ممكن نكتفي بتنبيه بعدم إمكانية التمويل
-        requiredDownPayment = 1; // نضع قيمة مؤقتة للدلالة
-        financingMessage = "عذراً، المرحلة الأولى تتعدى نسبة 65%، يُتطلب دفع مقدم أكبر أو تقليل الالتزامات.";
-        resultHtml = `<div style="text-align:right; line-height:1.8;">
-          <b style="color:red;">${financingMessage}</b>
-        </div>`;
-        openResultModal(resultHtml);
-        return;
-      }
-
-      // في حال كان firstPhaseInstallment <= maxAllowed
-      // المرحلة الأولى تستمر firstPhaseDuration شهر
-      // خلال هذه المدة يتم دفع قسط + الالتزامات
-      // بعد انتهاء الالتزامات (or بعد انقضاء firstPhaseDuration)، ننتقل للمرحلة الثانية
-      const secondPhaseDuration = durationMonths - firstPhaseDuration;
-      if (secondPhaseDuration < 0) {
-        // يعني الالتزامات أطول من مدة التمويل وهذا خطأ في المنطق
-        openResultModal("مدة الالتزامات تتجاوز مدة التمويل. يرجى إعادة النظر.");
-        return;
-      }
-
-      // المبلغ المتبقي لسداد أصل القرض + الفائدة
-      // القسط المدفوع في المرحلة الأولى = firstPhaseInstallment * firstPhaseDuration
-      // لكنه يشمل الالتزامات + جزء من القرض + فائدة...
-      // لحساب متبقي القرض: نفترض كل شهر ندفع monthlyInterest + (أي مبلغ للقرض)
-      // تبسيطًا قد نستخدم مقاربة: (unitAmount + totalInterest) - (firstPhaseInstallment * firstPhaseDuration)
-      const paidInFirstPhase = firstPhaseInstallment * firstPhaseDuration;
-      let remainingLoan = (unitAmount + totalInterest) - paidInFirstPhase;
-      if (remainingLoan < 0) remainingLoan = 0;
-
-      // المرحلة الثانية: لا يوجد التزامات (نفترض انتهت)
-      // القسط في المرحلة الثانية = remainingLoan / secondPhaseDuration
-      let secondPhaseInstallment = 0;
-      if (secondPhaseDuration > 0) {
-        secondPhaseInstallment = remainingLoan / secondPhaseDuration;
-        // يجب ألا يتجاوز 65% من الراتب
-        // ويجب ألا يقل عن monthlyInterest
-        if (secondPhaseInstallment < monthlyInterest) {
-          // القسط لا يغطي الفائدة الشهرية => غير ممكن
-          requiredDownPayment = 1;
-          financingMessage = "لا يمكن تمويلك لأن قسط المرحلة الثانية أقل من الفائدة الشهرية.";
-          resultHtml = `<div style="text-align:right; line-height:1.8;">
-            <b style="color:red;">${financingMessage}</b>
-          </div>`;
-          openResultModal(resultHtml);
-          return;
-        }
-
-        const secondPhasePercent = (secondPhaseInstallment / salary) * 100;
-        if (secondPhasePercent > 65) {
-          // نحتاج دفعة مقدم
-          requiredDownPayment = (secondPhaseInstallment - maxAllowed) * secondPhaseDuration;
-          if (requiredDownPayment < 0) requiredDownPayment = 0;
-          if (requiredDownPayment > 0) {
-            financingMessage = `المرحلة الثانية تتجاوز 65%، يجب دفع مقدم إضافي بقيمة تقارب: ${requiredDownPayment.toFixed(2)} ريال.`;
-          } else {
-            financingMessage = "التمويل ممكن بناءً على المعلومات.";
-          }
-        } else {
-          financingMessage = "التمويل ممكن بناءً على المعلومات المدخلة.";
-        }
+    // تحقق من نسبة الاستقطاع
+    const singlePhaseCommitmentPercentage = (singlePhaseInstallment / salary) * 100;
+    if (singlePhaseCommitmentPercentage > 65) {
+      requiredDownPayment = (unitAmount + totalInterest) - (maxAllowed * durationMonths);
+      if (requiredDownPayment < 0) requiredDownPayment = 0;
+      if (requiredDownPayment > 0) {
+        financingMessage = `القسط يتجاوز 65%، يجب دفع مقدم إضافي بقيمة تقريبية ${requiredDownPayment.toFixed(2)} ريال.`;
       } else {
-        // يعني ما في مرحلة ثانية (الالتزامات بنفس مدة التمويل)
-        secondPhaseInstallment = 0;
         financingMessage = "التمويل ممكن بناءً على المعلومات المدخلة.";
       }
-
-      resultHtml = `
-        <div style="text-align:right; line-height:1.8;">
-          <strong style="font-size:16px;">المرحلة الأولى:</strong><br>
-          <b>القسط الشهري + الالتزامات:</b> ${firstPhaseInstallment.toFixed(2)} ريال<br>
-          <b>مدة المرحلة الأولى:</b> ${firstPhaseDuration} شهر<br>
-          <b>مجموع الالتزامات:</b> ${totalCommitments.toFixed(2)} ريال<br>
-          <hr>
-          <strong style="font-size:16px;">المرحلة الثانية:</strong><br>
-          <b>القسط الشهري:</b> ${secondPhaseInstallment.toFixed(2)} ريال<br>
-          <b>مدة المرحلة الثانية:</b> ${secondPhaseDuration} شهر<br>
-          <hr>
-          <b>مبلغ الوحدة بعد الخصم:</b> ${unitAmount.toFixed(2)} ريال<br>
-          <b>إجمالي الفوائد:</b> ${totalInterest.toFixed(2)} ريال<br>
-          <b>مبلغ الوحدة بعد إضافة الفوائد:</b> ${(unitAmount + totalInterest).toFixed(2)} ريال<br>
-          <hr>
-          <b style="color:${requiredDownPayment>0?'red':'green'};">
-            ${financingMessage}
-            ${requiredDownPayment>0 ? '<br> الدفعة المقدمة المطلوبة: ' + requiredDownPayment.toFixed(2) + ' ريال.' : ''}
-          </b>
-        </div>
-      `;
-      openResultModal(resultHtml);
+    } else {
+      financingMessage = "التمويل ممكن بناءً على المعلومات المدخلة.";
     }
+
+    resultHtml = `
+      <div style="text-align:right; line-height:1.8;">
+        <strong>قسط واحد:</strong><br>
+        <b>القسط الشهري:</b> ${singlePhaseInstallment.toFixed(2)} ريال<br>
+        <b>نسبة الاستقطاع:</b> ${singlePhaseCommitmentPercentage.toFixed(2)}%<br>
+        <b>مبلغ الوحدة بعد الخصم:</b> ${unitAmount.toFixed(2)} ريال<br>
+        <b>إجمالي الفوائد:</b> ${totalInterest.toFixed(2)} ريال<br>
+        <b>مبلغ الوحدة بعد الفوائد:</b> ${(unitAmount + totalInterest).toFixed(2)} ريال<br>
+        <hr>
+        <b style="color:${requiredDownPayment>0?'red':'green'};">${financingMessage}</b>
+      </div>
+    `;
+    openResultModal(resultHtml);
+    return;
+  }
+
+  // ========== الحالة الثانية: يوجد التزامات (مرحلة أولى + ثانية) ==========
+  // المرحلة الأولى تدفع قسط شهري يضم التزامات + جزء التمويل.
+  // المطلوب:
+  // 1) ألا يقل القسط (قبل إضافة الالتزامات) عن monthlyInterest
+  // 2) مجموع القسط + الالتزامات لا يتجاوز maxAllowed
+  // 3) استخدمنا "أعلى قسط ممكن" لا يتعدى 65% => firstPhaseInstallment = maxAllowed
+  //    ولكن تحقق ألا يكون (commitments + monthlyInterest) > maxAllowed من الأساس
+
+  if (totalCommitments + monthlyInterest > maxAllowed) {
+    // يعني من البداية القسط الأدنى لتغطية الفائدة + الالتزامات يتجاوز 65%
+    financingMessage = "المرحلة الأولى تتعدى 65% من الراتب. يجب توفير دفعة مقدمة أكبر أو تقليل الالتزامات.";
+    resultHtml = `<div style="text-align:right; line-height:1.8;">
+      <b style="color:red;">${financingMessage}</b>
+    </div>`;
+    openResultModal(resultHtml);
+    return;
+  }
+
+  // لو وصلنا هنا، معناه بالإمكان جعل القسط في المرحلة الأولى = maxAllowed (الأعلى الممكن)
+  // بحيث يتم سداد جزء أكبر من أصل القرض.
+  const firstPhaseInstallment = maxAllowed; 
+  const firstPhaseDuration = Math.min(maxCommitmentMonths, durationMonths);
+
+  // المبلغ المدفوع في المرحلة الأولى
+  const paidInFirstPhase = firstPhaseInstallment * firstPhaseDuration;
+
+  // بعد المرحلة الأولى، ما تبقى من (unitAmount + totalInterest):
+  let remainingLoan = (unitAmount + totalInterest) - paidInFirstPhase;
+  if (remainingLoan < 0) remainingLoan = 0;
+
+  const secondPhaseDuration = durationMonths - firstPhaseDuration;
+  let secondPhaseInstallment = 0;
+
+  if (secondPhaseDuration > 0) {
+    // قسط المرحلة الثانية
+    secondPhaseInstallment = remainingLoan / secondPhaseDuration;
+
+    // يجب ألا يقل عن monthlyInterest
+    if (secondPhaseInstallment < monthlyInterest) {
+      financingMessage = "القسط في المرحلة الثانية أقل من الفائدة الشهرية. غير ممكن ما لم توفر دفع مقدم.";
+      resultHtml = `<div style="text-align:right; color:red;">
+        ${financingMessage}
+      </div>`;
+      openResultModal(resultHtml);
+      return;
+    }
+
+    // نسبة الاستقطاع للمرحلة الثانية
+    const secondPhasePercent = (secondPhaseInstallment / salary) * 100;
+    if (secondPhasePercent > 65) {
+      // احسب الدفعة المقدمة
+      // نريد قسط = maxAllowed => remainingLoan - (maxAllowed * secondPhaseDuration)
+      requiredDownPayment = remainingLoan - (maxAllowed * secondPhaseDuration);
+      if (requiredDownPayment < 0) requiredDownPayment = 0;
+
+      if (requiredDownPayment > 0) {
+        financingMessage = `المرحلة الثانية تتجاوز 65%. يجب دفع مقدم ${requiredDownPayment.toFixed(2)} ريال تقريبًا.`;
+      } else {
+        financingMessage = "التمويل ممكن بناءً على المعلومات.";
+      }
+    } else {
+      financingMessage = "التمويل ممكن بناءً على المعلومات المدخلة.";
+    }
+  } else {
+    // مدة الثانية = 0 => التزامات بنفس مدة التمويل
+    secondPhaseInstallment = 0;
+    financingMessage = "التمويل ممكن بناءً على المعلومات المدخلة (لا توجد مرحلة ثانية).";
+  }
+
+  resultHtml = `
+    <div style="text-align:right; line-height:1.8;">
+      <strong style="font-size:16px;">المرحلة الأولى (مع التزامات):</strong><br>
+      <b>القسط الشهري (يشمل أصل التمويل + فائدة):</b> ${firstPhaseInstallment.toFixed(2)} ريال<br>
+      <b>الالتزامات الشهرية:</b> ${totalCommitments.toFixed(2)} ريال (مشمولة في حدود الـ 65%)<br>
+      <b>مدة المرحلة الأولى:</b> ${firstPhaseDuration} شهر<br>
+      <hr>
+      <strong style="font-size:16px;">المرحلة الثانية:</strong><br>
+      <b>القسط الشهري:</b> ${secondPhaseInstallment.toFixed(2)} ريال<br>
+      <b>مدة المرحلة الثانية:</b> ${secondPhaseDuration} شهر<br>
+      <hr>
+      <b>مبلغ الوحدة بعد الخصم:</b> ${unitAmount.toFixed(2)} ريال<br>
+      <b>إجمالي الفوائد:</b> ${totalInterest.toFixed(2)} ريال<br>
+      <b>مبلغ الوحدة بعد إضافة الفوائد:</b> ${(unitAmount + totalInterest).toFixed(2)} ريال<br>
+      <hr>
+      <b style="color:${requiredDownPayment>0?'red':'green'};">
+        ${financingMessage}
+        ${requiredDownPayment>0 ? '<br> دفعة مقدمة مطلوبة: ' + requiredDownPayment.toFixed(2) + ' ريال.' : ''}
+      </b>
+    </div>
+  `;
+  openResultModal(resultHtml);
+}
+
 
     // ========== غلق نتيجة الحساب ==========
     function closeResultModal() {
