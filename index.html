@@ -526,13 +526,17 @@
   <script type="text/javascript" src="https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js"></script>
 
   <script>
-    $(document).ready(function(){
-      $('#units-table').DataTable({
-        "language": {
-          "url": "//cdn.datatables.net/plug-ins/1.13.5/i18n/ar.json"
-        }
-      });
-    });
+$(document).ready(function () {
+  $('#units-table').DataTable({
+    "language": {
+      "url": "//cdn.datatables.net/plug-ins/1.13.5/i18n/ar.json"
+    },
+    "searching": false, // تعطيل البحث
+    "paging": false,    // تعطيل اختيار عدد الصفحات
+    "info": false       // تعطيل إظهار معلومات الجدول
+  });
+});
+
 
     // دوال تشغيل وإغلاق الفيديو
     function openVideoModal(videoFileName) {
@@ -706,7 +710,7 @@ async function fetchData() {
 
     if (Array.isArray(data)) {
       console.log("البيانات المستلمة:", data); // طباعة البيانات للتأكد
-      updateTable(data);
+      applyFilter(data); // استدعاء دالة الفلترة
     } else if (data.error) {
       alert(data.error);
     }
@@ -715,6 +719,28 @@ async function fetchData() {
     alert("حدث خطأ أثناء جلب البيانات. يرجى المحاولة لاحقًا.");
   }
 }
+
+
+function applyFilter(data) {
+  const typeFilter = document.getElementById("typeFilter").value;
+  const minPrice = parseInt(document.getElementById("minPrice").value);
+  const maxArea = parseInt(document.getElementById("maxArea").value);
+
+  const filteredData = data.filter(unit => {
+    const unitType = unit.unitType || "";
+    const price = parseInt(unit.discountedPrice) || 0;
+    const area = parseInt(unit.size) || 0;
+
+    return (
+      (!typeFilter || unitType === typeFilter) &&
+      price >= minPrice &&
+      area <= maxArea
+    );
+  });
+
+  updateTable(filteredData); // تحديث الجدول بالبيانات المفلترة
+}
+
 
 // تحديث الجدول في HTML
 function updateTable(units) {
@@ -727,7 +753,6 @@ function updateTable(units) {
         <td>${unit.unitType || "غير محدد"}</td>
         <td>${unit.unitNumber}</td>
         <td>${unit.floorNumber}</td>
-        <td>${unit.marketPrice || "غير متوفر"}</td>
         <td>${unit.discountedPrice || "غير متوفر"}</td>
         <td>${unit.size || "غير متوفر"}</td>
         <td><a href="${unit.planLink}" target="_blank">عرض المخطط</a></td>
@@ -802,6 +827,9 @@ document.getElementById('maxArea').addEventListener('input', function() {
     function closeModal() {
       document.getElementById("modal").style.display = "none";
     }
+document.getElementById("typeFilter").addEventListener("change", fetchData);
+document.getElementById("minPrice").addEventListener("input", fetchData);
+document.getElementById("maxArea").addEventListener("input", fetchData);
 
     // بدء جلب البيانات عند تحميل الصفحة
     fetchData();
