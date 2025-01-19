@@ -474,10 +474,9 @@
         <label for="roomsFilter">عدد الغرف</label>
         <select id="roomsFilter" class="form-select">
           <option value="">الكل</option>
-          <option value="1">1 غرفة</option>
-          <option value="2">2 غرف</option>
           <option value="3">3 غرف</option>
           <option value="4">4 غرف</option>
+          <option value="5">5 غرف</option>
         </select>
       </div>
       <div class="col-md-3">
@@ -507,6 +506,7 @@
           <th>نوع الوحدة</th>
           <th>رقم الوحدة</th>
           <th>رقم الدور</th>
+          <th>عدد الغرف</th>
           <th>القيمة قبل الدعم</th>
           <th>المساحة</th>
           <th>رابط المخطط</th>
@@ -758,8 +758,8 @@ function updateTable(filteredData) {
         <td>${unit.unitNumber}</td>
         <td>${unit.floorNumber}</td>
         <td>${unit.rooms}</td>
-        <td>${unit.size}</td>
         <td>${unit.marketPrice}</td>
+        <td>${unit.size}</td>
         <td><a href="${unit.planLink}" target="_blank">عرض المخطط</a></td>
         <td><a href="${unit.unitInMap}" target="_blank">الموقع على الخارطة</a></td>
         <td><button class="btn btn-success" onclick="openModal('${unit.unitNumber}')">حجز</button></td>
