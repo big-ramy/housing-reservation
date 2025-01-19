@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>حجز الوحدات السكنية</title>
   <!-- Bootstrap CSS -->
-  <!-- DataTables CSS -->
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.5/css/dataTables.bootstrap5.min.css"/>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/dataTables.bootstrap5.min.css"/>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -105,10 +104,8 @@
     .modal {
       display: none;
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       background-color: rgba(0, 0, 0, 0.5);
       z-index: 1000;
       justify-content: center;
@@ -125,45 +122,14 @@
       overflow-y: auto;
       text-align: center;
       box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
-    }
-
-    .modal-content form {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .modal-content input, .modal-content select {
-      flex: 1 1 calc(48% - 10px);
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-
-    .modal-content button {
-      flex: 1 1 100%;
-      margin-top: 10px;
-      padding: 10px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      cursor: pointer;
-      border-radius: 4px;
-      transition: background-color 0.3s ease;
-    }
-
-    .modal-content button:hover {
-      background-color: #0056b3;
+      margin: auto;
     }
 
     .result-modal {
       display: none;
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       background-color: rgba(0, 0, 0, 0.5);
       z-index: 1100;
       justify-content: center;
@@ -178,20 +144,7 @@
       width: 90%;
       max-width: 500px;
       box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
-    }
-
-    .result-modal .result-content button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #28a745;
-      color: white;
-      border: none;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-
-    .result-modal .result-content button:hover {
-      background-color: #218838;
+      margin: auto;
     }
 
     .models {
@@ -256,15 +209,12 @@
         flex-direction: row;
         justify-content: space-between;
       }
-
       .models img {
         width: 150px;
       }
-
       .info {
         font-size: 14px;
       }
-
       table th, table td {
         font-size: 12px;
         padding: 8px;
@@ -275,21 +225,17 @@
       .info {
         font-size: 12px;
       }
-
       .models img {
         width: 120px;
       }
-
       .modal-content {
         width: 95%;
         padding: 15px;
       }
-
       table th, table td {
         font-size: 10px;
         padding: 6px;
       }
-
       .video-btn, .installment-btn {
         padding: 8px 15px;
         font-size: 12px;
@@ -300,21 +246,17 @@
       .models img {
         width: 100px;
       }
-
       .video-btn, .installment-btn {
         padding: 6px 10px;
         font-size: 10px;
       }
-
       table th, table td {
         font-size: 8px;
         padding: 4px;
       }
-
       .modal-content {
         font-size: 12px;
       }
-
       .info {
         font-size: 10px;
       }
@@ -326,62 +268,48 @@
       margin-bottom: 20px;
       border-radius: 8px;
       box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+      max-width: 95%;
+      margin: 20px auto;
     }
 
     .filter-section label {
       font-size: 14px;
       color: #555;
       font-weight: bold;
+      margin-bottom: 5px;
     }
 
-    .slider-labels {
+    .range-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .range-labels {
       display: flex;
       justify-content: space-between;
       font-size: 12px;
-      margin-top: -5px;
+    }
+    .range-labels span {
+      width: 48%;
     }
 
-    table {
-      width: 100%;
-      margin: 20px auto;
-      border-collapse: collapse;
-      background-color: #fff;
-      box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    /* تعديل زر الإغلاق في المودال */
+    .btn-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      float: left;
+      margin-bottom: 10px;
+      margin-right: 5px;
+      color: #555;
     }
-
-    table th, table td {
-      text-align: center;
-      padding: 12px;
-      border: 1px solid #ccc;
-    }
-
-    table th {
-      background-color: #f4f4f4;
-    }
-
-    .btn {
-      padding: 10px 20px;
-      border-radius: 5px;
-      color: #fff;
-      transition: background-color 0.3s;
-    }
-
-    .btn-success {
-      background-color: #28a745;
-    }
-
-    .btn-success:hover {
-      background-color: #218838;
-    }
-
-    footer {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 14px;
-      color: #777;
+    .btn-close:hover {
+      color: #000;
     }
   </style>
 </head>
+
 <body>
   <header>
     <img src="https://media.licdn.com/dms/image/v2/C4D0BAQED93e7d7lWkQ/company-logo_200_200/company-logo_200_200/0/1630490580332?e=2147483647&v=beta&t=hCmFNUBkdnBTYQZvWm7qHm89w_zro06Rr-b2Eup0Ec8" alt="لوجو الشركة">
@@ -389,14 +317,17 @@
   </header>
 
   <div class="container info bg-white rounded shadow-sm py-3">
-    <strong>عزيزي المستفيد:</strong> حجز الوحدة لا يعني أنه حجز نهائي. يتوجب عليك دفع رسوم قدرها <strong>805 ريال</strong>
-    على حسابك في تطبيق سكني بعد استلام رسالة الحجز.
+    <strong>عزيزي المستفيد:</strong> حجز الوحدة لا يعني أنه حجز نهائي. يتوجب عليك دفع رسوم قدرها
+    <strong>805 ريال</strong> على حسابك في تطبيق سكني بعد استلام رسالة الحجز.
   </div>
 
   <div class="container models d-flex justify-content-center flex-wrap gap-3 mb-4">
-    <img src="https://jed-s3.bluvalt.com/sakani-prod-media-assets/uploads/published_medium/file/61ed161c593f7b5bda72d7a0/high_DM-Render__8_.jpg" alt="نموذج العمارة 1" class="img-fluid rounded shadow-sm">
-    <img src="https://ruh-s3.bluvalt.com/api-nhc.sa/s3fs-public/2023-07/%D8%AF%D8%B1%D8%A9%20%D8%A7%D9%84%D9%85%D8%AF%D9%8A%D9%86%D8%A9%201%2001.jpg" alt="نموذج العمارة 2" class="img-fluid rounded shadow-sm">
-    <img src="https://jed-s3.bluvalt.com/sakani-prod-media-assets/uploads/published_medium/file/61ed161b593f7b5bda72d79c/high_DM-Render__7_.jpg" alt="نموذج العمارة 3" class="img-fluid rounded shadow-sm">
+    <img src="https://jed-s3.bluvalt.com/sakani-prod-media-assets/uploads/published_medium/file/61ed161c593f7b5bda72d7a0/high_DM-Render__8_.jpg"
+         alt="نموذج العمارة 1" class="img-fluid rounded shadow-sm">
+    <img src="https://ruh-s3.bluvalt.com/api-nhc.sa/s3fs-public/2023-07/%D8%AF%D8%B1%D8%A9%20%D8%A7%D9%84%D9%85%D8%AF%D9%8A%D9%86%D8%A9%201%2001.jpg"
+         alt="نموذج العمارة 2" class="img-fluid rounded shadow-sm">
+    <img src="https://jed-s3.bluvalt.com/sakani-prod-media-assets/uploads/published_medium/file/61ed161b593f7b5bda72d79c/high_DM-Render__7_.jpg"
+         alt="نموذج العمارة 3" class="img-fluid rounded shadow-sm">
   </div>
 
   <div class="container mb-4 text-center">
@@ -411,7 +342,7 @@
   <!-- نافذة الفيديو المنبثقة -->
   <div id="video-modal" class="modal d-flex">
     <div class="modal-content">
-      <button class="btn-close float-start" onclick="closeVideoModal()"></button>
+      <button class="btn-close" onclick="closeVideoModal()">×</button>
       <video id="video-player" width="100%" controls>
         <source id="video-source" src="" type="video/mp4">
         متصفحك لا يدعم تشغيل الفيديو.
@@ -426,21 +357,46 @@
   <!-- نافذة حساب القسط -->
   <div id="installment-modal" class="modal d-flex">
     <div class="modal-content">
-      <button class="btn-close float-start" onclick="closeInstallmentModal()"></button>
+      <button class="btn-close" onclick="closeInstallmentModal()">×</button>
       <h2>حساب القسط الشهري</h2>
-      <form id="installment-form" class="row g-2">
-        <div class="col-12 col-md-6"><input id="salary" type="number" class="form-control" placeholder="الراتب الشهري"></div>
-        <div class="col-12 col-md-6"><input id="loanAmount" type="number" class="form-control" placeholder="مبلغ الوحدة قبل الدعم"></div>
-        <div class="col-12 col-md-6"><input id="durationMonths" type="number" class="form-control" placeholder="مدة التمويل (بالأشهر)"></div>
-        <div class="col-12 col-md-6"><input id="interestRate" type="number" class="form-control" placeholder="نسبة البنك (%)"></div>
-        <div class="col-12 col-md-6"><input id="commitment1" type="number" class="form-control" placeholder="التزام 1"></div>
-        <div class="col-12 col-md-6"><input id="commitmentMonths1" type="number" class="form-control" placeholder="مدة التزام 1 (بالأشهر)"></div>
-        <div class="col-12 col-md-6"><input id="commitment2" type="number" class="form-control" placeholder="التزام 2"></div>
-        <div class="col-12 col-md-6"><input id="commitmentMonths2" type="number" class="form-control" placeholder="مدة التزام 2 (بالأشهر)"></div>
-        <div class="col-12 col-md-6"><input id="commitment3" type="number" class="form-control" placeholder="التزام 3"></div>
-        <div class="col-12 col-md-6"><input id="commitmentMonths3" type="number" class="form-control" placeholder="مدة التزام 3 (بالأشهر)"></div>
-        <div class="col-12 col-md-6"><input id="commitment4" type="number" class="form-control" placeholder="التزام 4"></div>
-        <div class="col-12 col-md-6"><input id="commitmentMonths4" type="number" class="form-control" placeholder="مدة التزام 4 (بالأشهر)"></div>
+      <form id="installment-form" class="row g-2" style="text-align: right; font-size: 14px;">
+        <div class="col-12 col-md-6">
+          <input id="salary" type="number" class="form-control my-2" placeholder="الراتب الشهري (ريال)">
+        </div>
+        <div class="col-12 col-md-6">
+          <input id="loanAmount" type="number" class="form-control my-2" placeholder="مبلغ الوحدة قبل الدعم (ريال)">
+        </div>
+        <div class="col-12 col-md-6">
+          <input id="durationMonths" type="number" class="form-control my-2" placeholder="مدة التمويل (بالأشهر)">
+        </div>
+        <div class="col-12 col-md-6">
+          <input id="interestRate" type="number" class="form-control my-2" placeholder="نسبة البنك (%)">
+        </div>
+        <!-- الالتزامات -->
+        <div class="col-12 col-md-6">
+          <input id="commitment1" type="number" class="form-control my-2" placeholder="التزام 1 (ريال)">
+        </div>
+        <div class="col-12 col-md-6">
+          <input id="commitmentMonths1" type="number" class="form-control my-2" placeholder="مدة التزام 1 (أشهر)">
+        </div>
+        <div class="col-12 col-md-6">
+          <input id="commitment2" type="number" class="form-control my-2" placeholder="التزام 2 (ريال)">
+        </div>
+        <div class="col-12 col-md-6">
+          <input id="commitmentMonths2" type="number" class="form-control my-2" placeholder="مدة التزام 2 (أشهر)">
+        </div>
+        <div class="col-12 col-md-6">
+          <input id="commitment3" type="number" class="form-control my-2" placeholder="التزام 3 (ريال)">
+        </div>
+        <div class="col-12 col-md-6">
+          <input id="commitmentMonths3" type="number" class="form-control my-2" placeholder="مدة التزام 3 (أشهر)">
+        </div>
+        <div class="col-12 col-md-6">
+          <input id="commitment4" type="number" class="form-control my-2" placeholder="التزام 4 (ريال)">
+        </div>
+        <div class="col-12 col-md-6">
+          <input id="commitmentMonths4" type="number" class="form-control my-2" placeholder="مدة التزام 4 (أشهر)">
+        </div>
         <div class="col-12">
           <button type="button" class="btn btn-primary w-100" onclick="calculateInstallment()">حساب القسط</button>
         </div>
@@ -460,7 +416,7 @@
   <div class="filter-section">
     <h5>فلترة الوحدات السكنية</h5>
     <div class="row g-3">
-      <div class="col-md-3">
+      <div class="col-md-3 col-12">
         <label for="typeFilter">نوع الوحدة</label>
         <select id="typeFilter" class="form-select">
           <option value="">الكل</option>
@@ -469,19 +425,26 @@
           <option value="فيلا">فيلا</option>
         </select>
       </div>
-        <label for="minPrice">السعر (ريال)</label>
-        <input type="range" id="minPrice" min="500000" max="1000000" value="500000" class="form-range">
-        <div class="slider-labels">
-          <span id="minPriceValue">500,000</span>
-          <span>1000,000</span>
+      <div class="col-md-4 col-12">
+        <label>السعر (ريال)</label>
+        <div class="range-group">
+          <input type="range" id="priceMin" min="500000" max="1500000" value="500000" class="form-range" style="width:45%;">
+          <input type="range" id="priceMax" min="500000" max="1500000" value="1500000" class="form-range" style="width:45%;">
+        </div>
+        <div class="range-labels">
+          <span id="priceMinValue">500,000</span>
+          <span id="priceMaxValue">1,500,000</span>
         </div>
       </div>
-      <div class="col-md-3">
-        <label for="maxArea">المساحة (م²)</label>
-        <input type="range" id="maxArea" min="125" max="500" value="500" class="form-range">
-        <div class="slider-labels">
-          <span>125</span>
-          <span id="maxAreaValue">500</span>
+      <div class="col-md-4 col-12">
+        <label>المساحة (م²)</label>
+        <div class="range-group">
+          <input type="range" id="areaMin" min="125" max="500" value="125" class="form-range" style="width:45%;">
+          <input type="range" id="areaMax" min="125" max="500" value="500" class="form-range" style="width:45%;">
+        </div>
+        <div class="range-labels">
+          <span id="areaMinValue">125</span>
+          <span id="areaMaxValue">500</span>
         </div>
       </div>
     </div>
@@ -519,26 +482,24 @@
     </div>
   </div>
 
-  <!-- Bootstrap & jQuery & DataTables JS -->
   <script src="https://code.jquery.com/jquery-3.7.0.min.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-  <script type="text/javascript" src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
-  <script type="text/javascript" src="https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js"></script>
 
   <script>
-$(document).ready(function () {
-  $('#units-table').DataTable({
-    "language": {
-      "url": "//cdn.datatables.net/plug-ins/1.13.5/i18n/ar.json"
-    },
-    "searching": false, // تعطيل البحث
-    "paging": false,    // تعطيل اختيار عدد الصفحات
-    "info": false       // تعطيل إظهار معلومات الجدول
-  });
-});
+    $(document).ready(function () {
+      $('#units-table').DataTable({
+        "language": {
+          "url": "//cdn.datatables.net/plug-ins/1.13.5/i18n/ar.json"
+        },
+        "searching": false,
+        "paging": false,
+        "info": false
+      });
+    });
 
-
-    // دوال تشغيل وإغلاق الفيديو
+    // ========== منطق الفيديو ==========
     function openVideoModal(videoFileName) {
       const videoPlayer = document.getElementById("video-player");
       const videoSource = document.getElementById("video-source");
@@ -552,7 +513,7 @@ $(document).ready(function () {
       document.getElementById("video-modal").style.display = "none";
     }
 
-    // فتح وإغلاق نافذة الحساب
+    // ========== فتح وإغلاق نافذة الحساب ==========
     function openInstallmentModal() {
       document.getElementById("installment-modal").style.display = "flex";
     }
@@ -560,45 +521,25 @@ $(document).ready(function () {
       document.getElementById("installment-modal").style.display = "none";
     }
 
-    // فتح وإغلاق نافذة النتيجة
+    // ========== فتح وإغلاق نافذة النتيجة ==========
     function openResultModal(message) {
       const modal = document.getElementById("result-modal");
       const resultMessage = document.getElementById("result-message");
-      resultMessage.innerHTML = `
-        <div style="text-align: right; font-size: 16px; line-height: 1.8;">
-          <strong style="font-size: 18px; color: #333;">النتائج:</strong><br>
-          <hr style="margin: 10px 0;">
-          <strong>القسط + الالتزامات المرحلة الأولى:</strong> <span style="color: #007bff;">${message.firstPhaseInstallment.toFixed(2)} ريال</span><br>
-          <strong>مدة المرحلة الأولى:</strong> <span style="color: #007bff;">${message.firstPhaseDuration} شهر</span><br>
-          <strong>نسبة الاستقطاع في المرحلة الأولى:</strong> <span style="color: #ff6347;">${message.firstPhaseCommitmentPercentage}%</span><br>
-          <hr style="margin: 10px 0;">
-          <strong>القسط في المرحلة الثانية:</strong> <span style="color: #28a745;">${message.secondPhaseInstallment ? message.secondPhaseInstallment.toFixed(2) : 'N/A'} ريال</span><br>
-          <strong>مدة المرحلة الثانية:</strong> <span style="color: #28a745;">${message.secondPhaseDuration || 'N/A'} شهر</span><br>
-          <strong>نسبة الاستقطاع في المرحلة الثانية:</strong> <span style="color: #ff6347;">${message.secondPhaseCommitmentPercentage || 'N/A'}%</span><br>
-          <hr style="margin: 10px 0;">
-          <strong>مبلغ الوحدة بعد الخصم:</strong> <span style="color: #ffc107;">${message.unitAmount.toFixed(2)} ريال</span><br>
-          <strong>تم خصم:</strong> <span style="color: #dc3545;">${message.discount} ريال</span><br>
-          <hr style="margin: 10px 0;">
-          <strong>إجمالي الفوائد:</strong> <span style="color: #17a2b8;">${message.totalInterest.toFixed(2)} ريال</span><br>
-          <strong>إجمالي مبلغ الوحدة بعد إضافة الفوائد:</strong> <span style="color: #6c757d;">${message.totalUnitWithInterest.toFixed(2)} ريال</span><br>
-          <hr style="margin: 10px 0;">
-          <strong style="color: ${message.requiredDownPayment > 0 ? '#dc3545' : '#28a745'};">
-            ${message.financingMessage}
-          </strong>
-        </div>
-      `;
+      resultMessage.innerHTML = message;
       modal.style.display = "flex";
     }
     function closeResultModal() {
       document.getElementById("result-modal").style.display = "none";
     }
 
+    // ========== الدالة الرئيسية لحساب الأقساط ==========
     function calculateInstallment() {
       const salary = parseFloat(document.getElementById("salary").value) || 0;
       let unitAmount = parseFloat(document.getElementById("loanAmount").value) || 0;
       const durationMonths = parseFloat(document.getElementById("durationMonths").value) || 0;
       const interestRate = parseFloat(document.getElementById("interestRate").value) || 0;
 
+      // الالتزامات
       const commitments = [
         { amount: parseFloat(document.getElementById("commitment1").value) || 0, months: parseInt(document.getElementById("commitmentMonths1").value) || 0 },
         { amount: parseFloat(document.getElementById("commitment2").value) || 0, months: parseInt(document.getElementById("commitmentMonths2").value) || 0 },
@@ -606,167 +547,298 @@ $(document).ready(function () {
         { amount: parseFloat(document.getElementById("commitment4").value) || 0, months: parseInt(document.getElementById("commitmentMonths4").value) || 0 },
       ];
 
+      // تحديد الخصم (الدعم)
       const discount = salary < 10000 ? 150000 : 100000;
       unitAmount -= discount;
 
-      const totalInterest = unitAmount * (interestRate / 100) * (durationMonths / 12);
-      const monthlyInterest = totalInterest / durationMonths;
+      // حساب الفائدة الكلية والتأكد من وجود مدة
+      if (durationMonths <= 0) {
+        openResultModal("الرجاء إدخال مدة تمويل صحيحة (أشهر).");
+        return;
+      }
 
+      const totalInterest = unitAmount * (interestRate / 100) * (durationMonths / 12);
+      const monthlyInterest = totalInterest / durationMonths;  // قيمة الفائدة الشهرية
+
+      // نبدأ بحساب ما إذا كانت هناك التزامات في مرحلة أولى
       const maxCommitmentMonths = Math.max(...commitments.map(c => c.months));
       const totalCommitments = commitments.reduce((sum, c) => sum + c.amount, 0);
 
-      const firstPhaseInstallment = monthlyInterest + totalCommitments;
-      const firstPhaseCommitmentPercentage = ((firstPhaseInstallment / salary) * 100).toFixed(2);
-
+      const maxAllowed = salary * 0.65;
       let requiredDownPayment = 0;
       let financingMessage = "";
+      let resultHtml = "";
 
+      // لابد ألا يقل القسط في أي مرحلة عن قيمة الفائدة الشهرية
+      // حتى لا يتراكم الدين
+
+      // === الحالة 1: لو ما عنده التزامات (totalCommitments == 0) ===
       if (totalCommitments === 0) {
+        // قسط وحيد على مدى كل الأشهر
         const singlePhaseInstallment = (unitAmount + totalInterest) / durationMonths;
-        const singlePhaseCommitmentPercentage = ((singlePhaseInstallment / salary) * 100).toFixed(2);
+
+        // يجب ألا يقل عن monthlyInterest:
+        if (singlePhaseInstallment < monthlyInterest) {
+          // يعني يقصر عن دفع الفائدة
+          openResultModal("القسط أقل من قيمة الفائدة الشهرية. يجب تقصير مدة التمويل أو دفع مبلغ مقدم أكبر.");
+          return;
+        }
+
+        // تحقق من النسبة
+        const singlePhaseCommitmentPercentage = (singlePhaseInstallment / salary) * 100;
 
         if (singlePhaseCommitmentPercentage > 65) {
-          requiredDownPayment = ((singlePhaseInstallment - salary * 0.65) * durationMonths);
-          financingMessage = `لا يمكن تمويلك إلا في حال وفرت دفعة قدرها ${requiredDownPayment.toFixed(2)} ريال وذلك لأن التزاماتك تعدت نسبة 65%.`;
+          // نحسب الدفعة المقدمة المطلوبة لخفض الأقساط للحد المطلوب
+          // المعادلة: نريد installment الجديد = maxAllowed
+          // (unitAmount + totalInterest - downPayment) / durationMonths = maxAllowed
+          // downPayment = (unitAmount + totalInterest) - (maxAllowed * durationMonths)
+          requiredDownPayment = (unitAmount + totalInterest) - (maxAllowed * durationMonths);
+          if (requiredDownPayment < 0) requiredDownPayment = 0; // تفادي السالب
+
+          if (requiredDownPayment > 0) {
+            financingMessage = `لا يمكن تمويلك إلا إذا قمت بدفع مقدم إضافي وقدره ${requiredDownPayment.toFixed(2)} ريال (لضمان ألا تتجاوز نسبة الاستقطاع 65%).`;
+          } else {
+            financingMessage = "التمويل ممكن بناءً على المعلومات المدخلة.";
+          }
         } else {
           financingMessage = "التمويل ممكن بناءً على المعلومات المدخلة.";
         }
 
-        openResultModal({
-          firstPhaseInstallment: singlePhaseInstallment,
-          firstPhaseDuration: durationMonths,
-          firstPhaseCommitmentPercentage: singlePhaseCommitmentPercentage,
-          secondPhaseInstallment: 0,
-          secondPhaseDuration: 0,
-          secondPhaseCommitmentPercentage: 0,
-          unitAmount: unitAmount,
-          discount: discount,
-          totalInterest: totalInterest,
-          totalUnitWithInterest: unitAmount + totalInterest,
-          financingMessage: financingMessage,
-          requiredDownPayment: requiredDownPayment,
-        });
-
+        // صياغة النتيجة
+        resultHtml = `
+          <div style="text-align:right; line-height:1.8;">
+            <strong style="font-size:16px;">المرحلة الوحيدة:</strong><br>
+            <b>القسط الشهري:</b> ${singlePhaseInstallment.toFixed(2)} ريال<br>
+            <b>نسبة الاستقطاع:</b> ${singlePhaseCommitmentPercentage.toFixed(2)}%<br>
+            <b>مبلغ الوحدة بعد الخصم:</b> ${unitAmount.toFixed(2)} ريال<br>
+            <b>إجمالي الفوائد:</b> ${totalInterest.toFixed(2)} ريال<br>
+            <b>مبلغ الوحدة بعد إضافة الفوائد:</b> ${(unitAmount + totalInterest).toFixed(2)} ريال<br>
+            <hr>
+            <b style="color:${requiredDownPayment>0?'red':'green'};">${financingMessage}</b>
+          </div>
+        `;
+        openResultModal(resultHtml);
         return;
       }
 
-      const maxAllowedInstallment = salary * 0.65;
+      // === الحالة 2: وجود التزامات (مرحلة أولى + مرحلة ثانية) ===
+      // المرحلة الأولى: يكون القسط مع الالتزامات لا يتجاوز maxAllowed
+      // ويجب ألا يقل عن monthlyInterest (لا يقل عن الفائدة الشهرية)
+      // إن لم يتحقق الشرط -> نطلب دفعة مقدم حتى يقل المبلغ
       const firstPhaseDuration = Math.min(maxCommitmentMonths, durationMonths);
-      const remainingLoan = unitAmount + totalInterest - (maxAllowedInstallment * firstPhaseDuration);
+      // نفترض القسط في المرحلة الأولى = أكبر من (totalCommitments + monthlyInterest)
+      // لكن أيضًا لا يتعدى 0.65 * الراتب
+      let firstPhaseInstallment = totalCommitments + monthlyInterest;
 
-      if (remainingLoan > 0) {
-        const secondPhaseDuration = durationMonths - firstPhaseDuration;
-        const secondPhaseInstallment = remainingLoan / secondPhaseDuration;
-        const secondPhaseCommitmentPercentage = ((secondPhaseInstallment / salary) * 100).toFixed(2);
-
-        financingMessage = "التمويل ممكن بناءً على المعلومات المدخلة.";
-
-        openResultModal({
-          firstPhaseInstallment: maxAllowedInstallment,
-          firstPhaseDuration: firstPhaseDuration,
-          firstPhaseCommitmentPercentage: 65,
-          secondPhaseInstallment: secondPhaseInstallment,
-          secondPhaseDuration: secondPhaseDuration,
-          secondPhaseCommitmentPercentage: secondPhaseCommitmentPercentage,
-          unitAmount: unitAmount,
-          discount: discount,
-          totalInterest: totalInterest,
-          totalUnitWithInterest: unitAmount + totalInterest,
-          financingMessage: financingMessage,
-          requiredDownPayment: requiredDownPayment,
-        });
-      } else {
-        financingMessage = "التمويل ممكن بناءً على المعلومات المدخلة.";
-
-        openResultModal({
-          firstPhaseInstallment: maxAllowedInstallment,
-          firstPhaseDuration: firstPhaseDuration,
-          firstPhaseCommitmentPercentage: 65,
-          secondPhaseInstallment: 0,
-          secondPhaseDuration: 0,
-          secondPhaseCommitmentPercentage: 0,
-          unitAmount: unitAmount,
-          discount: discount,
-          totalInterest: totalInterest,
-          totalUnitWithInterest: unitAmount + totalInterest,
-          financingMessage: financingMessage,
-          requiredDownPayment: requiredDownPayment,
-        });
+      if (firstPhaseInstallment > maxAllowed) {
+        // إذن تتجاوز 65% من الراتب في المرحلة الأولى
+        // نحسب الدفعة المقدمة لخفض مبلغ التمويل
+        // إذا خفضنا مبلغ التمويل X => تقل الفائدة
+        // سنبسط الحساب: نقول المستخدم يجب أن يدفع مقدم كي لا يتعدى
+        // (totalCommitments + monthlyInterest) <= maxAllowed
+        // المقدم يزيد => يقل unitAmount => يقل totalInterest => يقل monthlyInterest
+        // هذا حساب معقد ديناميكي؛ ممكن نكتفي بتنبيه بعدم إمكانية التمويل
+        requiredDownPayment = 1; // نضع قيمة مؤقتة للدلالة
+        financingMessage = "عذراً، المرحلة الأولى تتعدى نسبة 65%، يُتطلب دفع مقدم أكبر أو تقليل الالتزامات.";
+        resultHtml = `<div style="text-align:right; line-height:1.8;">
+          <b style="color:red;">${financingMessage}</b>
+        </div>`;
+        openResultModal(resultHtml);
+        return;
       }
+
+      // في حال كان firstPhaseInstallment <= maxAllowed
+      // المرحلة الأولى تستمر firstPhaseDuration شهر
+      // خلال هذه المدة يتم دفع قسط + الالتزامات
+      // بعد انتهاء الالتزامات (or بعد انقضاء firstPhaseDuration)، ننتقل للمرحلة الثانية
+      const secondPhaseDuration = durationMonths - firstPhaseDuration;
+      if (secondPhaseDuration < 0) {
+        // يعني الالتزامات أطول من مدة التمويل وهذا خطأ في المنطق
+        openResultModal("مدة الالتزامات تتجاوز مدة التمويل. يرجى إعادة النظر.");
+        return;
+      }
+
+      // المبلغ المتبقي لسداد أصل القرض + الفائدة
+      // القسط المدفوع في المرحلة الأولى = firstPhaseInstallment * firstPhaseDuration
+      // لكنه يشمل الالتزامات + جزء من القرض + فائدة...
+      // لحساب متبقي القرض: نفترض كل شهر ندفع monthlyInterest + (أي مبلغ للقرض)
+      // تبسيطًا قد نستخدم مقاربة: (unitAmount + totalInterest) - (firstPhaseInstallment * firstPhaseDuration)
+      const paidInFirstPhase = firstPhaseInstallment * firstPhaseDuration;
+      let remainingLoan = (unitAmount + totalInterest) - paidInFirstPhase;
+      if (remainingLoan < 0) remainingLoan = 0;
+
+      // المرحلة الثانية: لا يوجد التزامات (نفترض انتهت)
+      // القسط في المرحلة الثانية = remainingLoan / secondPhaseDuration
+      let secondPhaseInstallment = 0;
+      if (secondPhaseDuration > 0) {
+        secondPhaseInstallment = remainingLoan / secondPhaseDuration;
+        // يجب ألا يتجاوز 65% من الراتب
+        // ويجب ألا يقل عن monthlyInterest
+        if (secondPhaseInstallment < monthlyInterest) {
+          // القسط لا يغطي الفائدة الشهرية => غير ممكن
+          requiredDownPayment = 1;
+          financingMessage = "لا يمكن تمويلك لأن قسط المرحلة الثانية أقل من الفائدة الشهرية.";
+          resultHtml = `<div style="text-align:right; line-height:1.8;">
+            <b style="color:red;">${financingMessage}</b>
+          </div>`;
+          openResultModal(resultHtml);
+          return;
+        }
+
+        const secondPhasePercent = (secondPhaseInstallment / salary) * 100;
+        if (secondPhasePercent > 65) {
+          // نحتاج دفعة مقدم
+          requiredDownPayment = (secondPhaseInstallment - maxAllowed) * secondPhaseDuration;
+          if (requiredDownPayment < 0) requiredDownPayment = 0;
+          if (requiredDownPayment > 0) {
+            financingMessage = `المرحلة الثانية تتجاوز 65%، يجب دفع مقدم إضافي بقيمة تقارب: ${requiredDownPayment.toFixed(2)} ريال.`;
+          } else {
+            financingMessage = "التمويل ممكن بناءً على المعلومات.";
+          }
+        } else {
+          financingMessage = "التمويل ممكن بناءً على المعلومات المدخلة.";
+        }
+      } else {
+        // يعني ما في مرحلة ثانية (الالتزامات بنفس مدة التمويل)
+        secondPhaseInstallment = 0;
+        financingMessage = "التمويل ممكن بناءً على المعلومات المدخلة.";
+      }
+
+      resultHtml = `
+        <div style="text-align:right; line-height:1.8;">
+          <strong style="font-size:16px;">المرحلة الأولى:</strong><br>
+          <b>القسط الشهري + الالتزامات:</b> ${firstPhaseInstallment.toFixed(2)} ريال<br>
+          <b>مدة المرحلة الأولى:</b> ${firstPhaseDuration} شهر<br>
+          <b>مجموع الالتزامات:</b> ${totalCommitments.toFixed(2)} ريال<br>
+          <hr>
+          <strong style="font-size:16px;">المرحلة الثانية:</strong><br>
+          <b>القسط الشهري:</b> ${secondPhaseInstallment.toFixed(2)} ريال<br>
+          <b>مدة المرحلة الثانية:</b> ${secondPhaseDuration} شهر<br>
+          <hr>
+          <b>مبلغ الوحدة بعد الخصم:</b> ${unitAmount.toFixed(2)} ريال<br>
+          <b>إجمالي الفوائد:</b> ${totalInterest.toFixed(2)} ريال<br>
+          <b>مبلغ الوحدة بعد إضافة الفوائد:</b> ${(unitAmount + totalInterest).toFixed(2)} ريال<br>
+          <hr>
+          <b style="color:${requiredDownPayment>0?'red':'green'};">
+            ${financingMessage}
+            ${requiredDownPayment>0 ? '<br> الدفعة المقدمة المطلوبة: ' + requiredDownPayment.toFixed(2) + ' ريال.' : ''}
+          </b>
+        </div>
+      `;
+      openResultModal(resultHtml);
     }
 
-    // فتح وإغلاق نافذة النتيجة
+    // ========== غلق نتيجة الحساب ==========
     function closeResultModal() {
       document.getElementById("result-modal").style.display = "none";
     }
 
-const apiUrl = "https://script.google.com/macros/s/AKfycbwMfmLqMJKht7-RB3FzJOhjum6mXgE5eMqSqQ-pxKc6aCfDS2wTRoY6Q9lVnzPazCO-/exec"; // استبدل بـ YOUR_SCRIPT_ID
+    // ========== ربط بالباك اند لجلب البيانات ==========
+    const apiUrl = "https://script.google.com/macros/s/AKfycbwMfmLqMJKht7-RB3FzJOhjum6mXgE5eMqSqQ-pxKc6aCfDS2wTRoY6Q9lVnzPazCO-/exec";
 
-// جلب البيانات من Google Sheets
-async function fetchData() {
-  try {
-    const response = await fetch(apiUrl);
-    const data = await response.json();
-
-    if (Array.isArray(data)) {
-      console.log("البيانات المستلمة:", data); // طباعة البيانات للتأكد
-      applyFilter(data); // استدعاء دالة الفلترة
-    } else if (data.error) {
-      alert(data.error);
+    async function fetchData() {
+      try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        if (Array.isArray(data)) {
+          applyFilter(data);
+        } else if (data.error) {
+          alert(data.error);
+        }
+      } catch (error) {
+        console.error("حدث خطأ أثناء جلب البيانات:", error);
+        alert("حدث خطأ أثناء جلب البيانات. يرجى المحاولة لاحقًا.");
+      }
     }
-  } catch (error) {
-    console.error("حدث خطأ أثناء جلب البيانات:", error);
-    alert("حدث خطأ أثناء جلب البيانات. يرجى المحاولة لاحقًا.");
-  }
-}
 
+    function applyFilter(data) {
+      const typeFilter = document.getElementById("typeFilter").value;
 
-function applyFilter(data) {
-  const typeFilter = document.getElementById("typeFilter").value;
-  const minPrice = parseInt(document.getElementById("minPrice").value);
-  const maxArea = parseInt(document.getElementById("maxArea").value);
+      const priceMin = parseInt(document.getElementById("priceMin").value) || 0;
+      const priceMax = parseInt(document.getElementById("priceMax").value) || 9999999;
+      const areaMin = parseInt(document.getElementById("areaMin").value) || 0;
+      const areaMax = parseInt(document.getElementById("areaMax").value) || 9999;
 
-  const filteredData = data.filter(unit => {
-    const unitType = unit.unitType || "";
-    const price = parseInt(unit.discountedPrice) || 0;
-    const area = parseInt(unit.size) || 0;
+      const filteredData = data.filter(unit => {
+        const unitType = unit.unitType || "";
+        const price = parseInt(unit.discountedPrice) || 0;
+        const area = parseInt(unit.size) || 0;
 
-    return (
-      (!typeFilter || unitType === typeFilter) &&
-      price >= minPrice &&
-      area <= maxArea
-    );
-  });
+        return (
+          (!typeFilter || unitType === typeFilter) &&
+          (price >= priceMin && price <= priceMax) &&
+          (area >= areaMin && area <= areaMax)
+        );
+      });
 
-  updateTable(filteredData); // تحديث الجدول بالبيانات المفلترة
-}
+      updateTable(filteredData);
+    }
 
+    function updateTable(units) {
+      const tableBody = document.querySelector("#units-table tbody");
+      tableBody.innerHTML = "";
 
-// تحديث الجدول في HTML
-function updateTable(units) {
-  const tableBody = document.querySelector("#units-table tbody");
-  tableBody.innerHTML = "";
+      units.forEach((unit) => {
+        const row = `
+          <tr>
+            <td>${unit.unitType || "غير محدد"}</td>
+            <td>${unit.unitNumber}</td>
+            <td>${unit.floorNumber}</td>
+            <td>${unit.discountedPrice || "غير متوفر"}</td>
+            <td>${unit.size || "غير متوفر"}</td>
+            <td><a href="${unit.planLink}" target="_blank">عرض المخطط</a></td>
+            <td><a href="${unit.unitInMap}" target="_blank">الموقع على الخارطة</a></td>
+            <td><button class="btn btn-success" onclick="openModal('${unit.unitNumber}')">حجز</button></td>
+          </tr>
+        `;
+        tableBody.innerHTML += row;
+      });
+    }
 
-  units.forEach((unit) => {
-    const row = `
-      <tr>
-        <td>${unit.unitType || "غير محدد"}</td>
-        <td>${unit.unitNumber}</td>
-        <td>${unit.floorNumber}</td>
-        <td>${unit.discountedPrice || "غير متوفر"}</td>
-        <td>${unit.size || "غير متوفر"}</td>
-        <td><a href="${unit.planLink}" target="_blank">عرض المخطط</a></td>
-        <td><a href="${unit.unitInMap}" target="_blank">الموقع على الخارطة</a></td>
-        <td><button class="btn btn-success" onclick="openModal('${unit.unitNumber}')">حجز</button></td>
-      </tr>
-    `;
-    tableBody.innerHTML += row;
-  });
-}
+    // عند تغيير أي قيمة في الفلترة
+    document.getElementById("typeFilter").addEventListener("change", fetchData);
+    document.getElementById("priceMin").addEventListener("input", handlePriceChange);
+    document.getElementById("priceMax").addEventListener("input", handlePriceChange);
+    document.getElementById("areaMin").addEventListener("input", handleAreaChange);
+    document.getElementById("areaMax").addEventListener("input", handleAreaChange);
 
-// استدعاء الدالة عند تحميل الصفحة
-fetchData();
+    function handlePriceChange() {
+      const priceMinVal = parseInt(document.getElementById("priceMin").value) || 0;
+      const priceMaxVal = parseInt(document.getElementById("priceMax").value) || 0;
 
+      // تأكد ألا يتجاوز الـ min أقصى من max
+      if (priceMinVal > priceMaxVal) {
+        document.getElementById("priceMax").value = priceMinVal;
+      }
+
+      document.getElementById("priceMinValue").textContent = priceMinVal.toLocaleString();
+      document.getElementById("priceMaxValue").textContent = Math.max(priceMinVal, priceMaxVal).toLocaleString();
+      fetchData();
+    }
+
+    function handleAreaChange() {
+      const areaMinVal = parseInt(document.getElementById("areaMin").value) || 0;
+      const areaMaxVal = parseInt(document.getElementById("areaMax").value) || 0;
+
+      if (areaMinVal > areaMaxVal) {
+        document.getElementById("areaMax").value = areaMinVal;
+      }
+
+      document.getElementById("areaMinValue").textContent = areaMinVal;
+      document.getElementById("areaMaxValue").textContent = Math.max(areaMinVal, areaMaxVal);
+      fetchData();
+    }
+
+    // ========== الحجز ==========
+    let selectedUnitNumber = "";
+    function openModal(unitNumber) {
+      selectedUnitNumber = unitNumber;
+      document.getElementById("modal").style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("modal").style.display = "none";
+    }
 
     async function reserveUnit() {
       const userId = document.getElementById("userId").value;
@@ -780,18 +852,14 @@ fetchData();
       try {
         const response = await fetch(apiUrl, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-          },
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: new URLSearchParams({
             unitNumber: selectedUnitNumber,
             userId: userId,
             phone: phone
           })
         });
-
         const result = await response.json();
-
         if (result.error) {
           alert(result.error);
         } else {
@@ -804,36 +872,12 @@ fetchData();
         alert("حدث خطأ أثناء الحجز. يرجى المحاولة لاحقًا.");
       }
     }
-
     document.getElementById("confirmBooking").addEventListener("click", reserveUnit);
 
-document.getElementById('minPrice').addEventListener('input', function() {
-  const minPriceValue = document.getElementById('minPriceValue');
-  minPriceValue.textContent = parseInt(this.value).toLocaleString(); // تحديث قيمة السعر
-});
-
-document.getElementById('maxArea').addEventListener('input', function() {
-  const maxAreaValue = document.getElementById('maxAreaValue');
-  maxAreaValue.textContent = parseInt(this.value).toLocaleString(); // تحديث قيمة المساحة
-});
-
-
-    
-    function openModal(unitNumber) {
-      selectedUnitNumber = unitNumber;
-      document.getElementById("modal").style.display = "flex";
-    }
-
-    function closeModal() {
-      document.getElementById("modal").style.display = "none";
-    }
-document.getElementById("typeFilter").addEventListener("change", fetchData);
-document.getElementById("minPrice").addEventListener("input", fetchData);
-document.getElementById("maxArea").addEventListener("input", fetchData);
-
-    // بدء جلب البيانات عند تحميل الصفحة
+    // ========== بدء جلب البيانات عند تحميل الصفحة ==========
     fetchData();
   </script>
+
   <footer class="container text-center mt-4 mb-4">
     © 2024 - نظام حجز الوحدات السكنية
   </footer>
