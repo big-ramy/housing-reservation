@@ -707,19 +707,16 @@
 
     if (Array.isArray(data)) {
       const typeFilter = $('#typeFilter').val();
-      const roomsFilter = parseInt($('#roomsFilter').val());
       const minPrice = parseInt($('#minPrice').val());
       const maxArea = parseInt($('#maxArea').val());
 
       const filteredData = data.filter(unit => {
-        const unitType = unit.unitType || '';
-        const rooms = parseInt(unit.rooms) || 0;
+        const unitType = parseInt(unit.unitType) || '0';
         const price = parseInt(unit.discountedPrice) || 0;
         const area = parseInt(unit.size) || 0;
 
         // تطبيق شروط الفلترة
         if (typeFilter && unitType !== typeFilter) return false;
-        if (roomsFilter && rooms !== roomsFilter) return false;
         if (price < minPrice) return false;
         if (area > maxArea) return false;
 
@@ -743,7 +740,7 @@ function updateTable(filteredData) {
   filteredData.forEach(unit => {
     const row = `
       <tr>
-        <td>${unit.unitType}</td>
+        <td>${unit.unitType || "غير محدد"}</td> <!-- تأكد من معالجة القيمة -->
         <td>${unit.unitNumber}</td>
         <td>${unit.floorNumber}</td>
         <td>${unit.discountedPrice}</td>
