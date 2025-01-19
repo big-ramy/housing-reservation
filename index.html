@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>حجز الوحدات السكنية</title>
   <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet" integrity="sha384-LZJBea7tnrTBY0J2g0Z/z+5iChbC/I2A0UeRY7adNp2VY2sTg6LSy78g+I/hMT6p" crossorigin="anonymous">
   <!-- DataTables CSS -->
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.5/css/dataTables.bootstrap5.min.css"/>
   <style>
@@ -697,33 +696,17 @@
       document.getElementById("result-modal").style.display = "none";
     }
 
-    const apiUrl = "https://script.google.com/macros/s/AKfycbxKxVCedeb8P_HHvxdrlCroIyxzcH3n9Mmzcb15mi2l7mrQ_uKWEfjfxNHnHI4XYCKK/exec";
-    let selectedUnitNumber = null;
+const apiUrl = "https://script.google.com/macros/s/AKfycbwMfmLqMJKht7-RB3FzJOhjum6mXgE5eMqSqQ-pxKc6aCfDS2wTRoY6Q9lVnzPazCO-/exec"; // استبدل بـ YOUR_SCRIPT_ID
 
-    async function fetchData() {
+// جلب البيانات من Google Sheets
+async function fetchData() {
   try {
     const response = await fetch(apiUrl);
     const data = await response.json();
 
     if (Array.isArray(data)) {
-      const typeFilter = $('#typeFilter').val();
-      const minPrice = parseInt($('#minPrice').val());
-      const maxArea = parseInt($('#maxArea').val());
-
-      const filteredData = data.filter(unit => {
-        const unitType = parseInt(unit.unitType) || '0';
-        const price = parseInt(unit.discountedPrice) || 0;
-        const area = parseInt(unit.size) || 0;
-
-        // تطبيق شروط الفلترة
-        if (typeFilter && unitType !== typeFilter) return false;
-        if (price < minPrice) return false;
-        if (area > maxArea) return false;
-
-        return true;
-      });
-
-      updateTable(filteredData);
+      console.log("البيانات المستلمة:", data); // طباعة البيانات للتأكد
+      updateTable(data);
     } else if (data.error) {
       alert(data.error);
     }
@@ -733,18 +716,20 @@
   }
 }
 
-function updateTable(filteredData) {
+// تحديث الجدول في HTML
+function updateTable(units) {
   const tableBody = document.querySelector("#units-table tbody");
   tableBody.innerHTML = "";
 
-  filteredData.forEach(unit => {
+  units.forEach((unit) => {
     const row = `
       <tr>
-        <td>${unit.unitType || "غير محدد"}</td> <!-- تأكد من معالجة القيمة -->
+        <td>${unit.unitType || "غير محدد"}</td>
         <td>${unit.unitNumber}</td>
         <td>${unit.floorNumber}</td>
-        <td>${unit.discountedPrice}</td>
-        <td>${unit.size}</td>
+        <td>${unit.marketPrice || "غير متوفر"}</td>
+        <td>${unit.discountedPrice || "غير متوفر"}</td>
+        <td>${unit.size || "غير متوفر"}</td>
         <td><a href="${unit.planLink}" target="_blank">عرض المخطط</a></td>
         <td><a href="${unit.unitInMap}" target="_blank">الموقع على الخارطة</a></td>
         <td><button class="btn btn-success" onclick="openModal('${unit.unitNumber}')">حجز</button></td>
@@ -753,6 +738,9 @@ function updateTable(filteredData) {
     tableBody.innerHTML += row;
   });
 }
+
+// استدعاء الدالة عند تحميل الصفحة
+fetchData();
 
 
     async function reserveUnit() {
